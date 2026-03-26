@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Felipe Wolff — Automation & AI Solutions Developer. I build intelligent assistants, API integrations, and workflow automations." />
+  <title>Felipe Wolff — Automation & AI Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Variables ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0d12;
+      --bg2:       #0f1318;
+      --bg3:       #151a22;
+      --border:    #1e2530;
+      --accent:    #00d4aa;
+      --accent2:   #0098ff;
+      --text:      #e2e8f0;
+      --muted:     #6b7a90;
+      --card:      #111720;
+      --radius:    12px;
+      --transition: 0.3s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: var(--accent); text-decoration: none; transition: color var(--transition); }
+    a:hover { color: var(--accent2); }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* ── Scrollbar ──────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* ── Nav ────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(10,13,18,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      color: var(--accent);
+      font-weight: 500;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-logo span { color: var(--muted); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color var(--transition);
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* Language Switcher */
+    .lang-switcher {
+      display: flex;
+      gap: 4px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px;
+    }
+
+    .lang-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 5px;
+      transition: all var(--transition);
+      letter-spacing: 0.5px;
+    }
+
+    .lang-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .lang-btn:hover:not(.active) {
+      color: var(--text);
+      background: var(--border);
+    }
+
+    /* Hamburger */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all var(--transition);
+    }
+
+    /* ── Sections ────────────────────────────────────────────── */
+    section { padding: 5rem 1.5rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 560px;
+      margin-bottom: 3rem;
+    }
+
+    /* ── Hero ────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 64px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* grid background */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,170,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,170,0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+    }
+
+    /* radial glow */
+    #hero::after {
+      content: '';
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(ellipse, rgba(0,212,170,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,212,170,0.08);
+      border: 1px solid rgba(0,212,170,0.2);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
+
+    .hero-name {
+      font-size: clamp(2.5rem, 7vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-name .accent { color: var(--accent); }
+
+    .hero-role {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-tagline {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--text);
+      line-height: 1.7;
+      max-width: 620px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-tagline em {
+      font-style: normal;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Video placeholder */
+    .video-placeholder {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all var(--transition);
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn-primary:hover {
+      background: #00efc0;
+      color: var(--bg);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,212,170,0.3);
+    }
+
+    .btn-secondary {
+      background: var(--bg3);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* ── About ───────────────────────────────────────────────── */
+    #about { background: var(--bg2); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    .about-text p strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+
+    .stat-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* Avatar */
+    .about-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .avatar-box {
+      position: relative;
+      width: 280px;
+      height: 280px;
+    }
+
+    .avatar-ring {
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,212,170,0.2);
+      animation: spin 20s linear infinite;
+    }
+
+    .avatar-ring::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--bg3) 0%, #1a2535 100%);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      overflow: hidden;
+    }
+
+    .avatar-icon {
+      font-size: 4rem;
+      line-height: 1;
+    }
+
+    .avatar-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+
+    .avatar-title {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: center;
+      padding: 0 1.5rem;
+    }
+
+    /* ── Skills ──────────────────────────────────────────────── */
+    #skills { background: var(--bg); }
+
+    .skills-categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .skill-category {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: border-color var(--transition);
+    }
+
+    .skill-category:hover { border-color: rgba(0,212,170,0.3); }
+
+    .skill-category-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      transition: all var(--transition);
+    }
+
+    .tag:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Projects ────────────────────────────────────────────── */
+    #projects { background: var(--bg2); }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all var(--transition);
+      display: grid;
+      grid-template-columns: 280px 1fr;
+    }
+
+    .project-card:hover {
+      border-color: rgba(0,212,170,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+
+    .project-card.featured {
+      border-color: rgba(0,212,170,0.2);
+      background: linear-gradient(135deg, #0f1a22 0%, var(--card) 100%);
+    }
+
+    .project-visual {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-mockup {
+      width: 100%;
+      height: 100%;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .mockup-jarvis {
+      background: linear-gradient(135deg, #0a1a15 0%, #0d2018 50%, #071510 100%);
+    }
+
+    .mockup-finance {
+      background: linear-gradient(135deg, #0a0f1a 0%, #0d1525 50%, #071018 100%);
+    }
+
+    .mockup-ninja {
+      background: linear-gradient(135deg, #1a0a0a 0%, #250d0d 50%, #1a0505 100%);
+    }
+
+    .mockup-email {
+      background: linear-gradient(135deg, #0a0a1a 0%, #0d0d25 50%, #070718 100%);
+    }
+
+    .mockup-icon {
+      font-size: 3rem;
+      line-height: 1;
+    }
+
+    .mockup-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 80%;
+    }
+
+    .mockup-line {
+      height: 2px;
+      border-radius: 2px;
+      opacity: 0.4;
+    }
+
+    .mockup-line.green { background: var(--accent); width: 70%; }
+    .mockup-line.blue { background: var(--accent2); width: 50%; }
+    .mockup-line.muted { background: var(--muted); width: 85%; }
+    .mockup-line.short { width: 35%; }
+
+    .project-info {
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .project-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .project-status {
+      flex-shrink: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 500;
+    }
+
+    .status-prod {
+      background: rgba(0,212,170,0.1);
+      border: 1px solid rgba(0,212,170,0.3);
+      color: var(--accent);
+    }
+
+    .status-working {
+      background: rgba(0,152,255,0.1);
+      border: 1px solid rgba(0,152,255,0.3);
+      color: var(--accent2);
+    }
+
+    .status-built {
+      background: rgba(255,165,0,0.1);
+      border: 1px solid rgba(255,165,0,0.3);
+      color: #ffa500;
+    }
+
+    .project-desc {
+      color: var(--muted);
+      font-size: 0.875rem;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+      flex: 1;
+    }
+
+    .project-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 1.25rem;
+    }
+
+    .project-features li {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .project-features li::before {
+      content: '→';
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      flex-shrink: 0;
+    }
+
+    .project-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .tech-tag {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .project-links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--accent);
+      border: 1px solid rgba(0,212,170,0.2);
+      border-radius: 6px;
+      padding: 5px 12px;
+      transition: all var(--transition);
+    }
+
+    .project-link:hover {
+      background: rgba(0,212,170,0.1);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ── Services ────────────────────────────────────────────── */
+    #services { background: var(--bg); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .service-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .service-card:hover {
+      border-color: rgba(0,212,170,0.2);
+      transform: translateY(-3px);
+    }
+
+    .service-card:hover::before { opacity: 1; }
+
+    .service-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      line-height: 1;
+    }
+
+    .service-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .service-desc {
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .service-price {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      background: rgba(0,212,170,0.08);
+      border-radius: 4px;
+      padding: 3px 8px;
+      display: inline-block;
+    }
+
+    /* ── Testimonials ────────────────────────────────────────── */
+    #testimonials { background: var(--bg2); }
+
+    .testimonials-placeholder {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: var(--card);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+    }
+
+    .testimonials-placeholder .icon { font-size: 3rem; margin-bottom: 1rem; }
+
+    .testimonials-placeholder p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      max-width: 400px;
+      margin: 0 auto 1.5rem;
+    }
+
+    /* ── Contact ─────────────────────────────────────────────── */
+    #contact { background: var(--bg); }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: all var(--transition);
+      color: var(--text);
+    }
+
+    .contact-link:hover {
+      border-color: rgba(0,212,170,0.3);
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .contact-link-icon {
+      font-size: 1.25rem;
+      width: 32px;
+      text-align: center;
+    }
+
+    .contact-link-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .contact-link-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .contact-link-value {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* Form */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      transition: border-color var(--transition);
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--accent);
+    }
+
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .form-group select option { background: var(--bg3); }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+      color: var(--accent);
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .footer-links a {
+      font-size: 0.8rem;
+      color: var(--muted);
+      transition: color var(--transition);
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── Animations ──────────────────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-in-delay-1 { transition-delay: 0.1s; }
+    .fade-in-delay-2 { transition-delay: 0.2s; }
+    .fade-in-delay-3 { transition-delay: 0.3s; }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 64px;
+        left: 0; right: 0;
+        background: var(--bg2);
+        border-bottom: 1px solid var(--border);
+        padding: 1.5rem;
+        gap: 1rem;
+      }
+      .nav-toggle { display: flex; }
+
+      section { padding: 3.5rem 1.25rem; }
+
+      .about-grid { grid-template-columns: 1fr; }
+      .about-visual { display: none; }
+      .about-stats { grid-template-columns: 1fr 1fr; }
+
+      .project-card { grid-template-columns: 1fr; }
+      .project-visual { min-height: 180px; }
+
+      .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-content { flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-name { letter-spacing: -1px; }
+      .hero-cta { flex-direction: column; }
+      .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-logo">fw<span>.</span>dev</div>
+
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#about"       data-i18n="nav_about">About</a></li>
+    <li><a href="#skills"      data-i18n="nav_skills">Skills</a></li>
+    <li><a href="#projects"    data-i18n="nav_projects">Projects</a></li>
+    <li><a href="#services"    data-i18n="nav_services">Services</a></li>
+    <li><a href="#contact"     data-i18n="nav_contact">Contact</a></li>
+    <li>
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" onclick="setLang('pt')">PT</button>
+      </div>
+    </li>
+  </ul>
+
+  <button class="nav-toggle" id="nav-toggle" aria-label="Menu" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge" data-i18n="hero_badge">Available for freelance</div>
+      <h1 class="hero-name">Felipe <span class="accent">Wolff</span></h1>
+      <p class="hero-role mono" data-i18n="hero_role">Automation &amp; AI Solutions Developer</p>
+
+      <p class="hero-tagline">
+        <span data-i18n="hero_tagline_pre">"I build </span><em data-i18n="hero_tagline_em">digital employees</em><span data-i18n="hero_tagline_post"> — AI-powered automations that work 24/7 so you don't have to."</span>
+      </p>
+
+      <div class="video-placeholder">
+        <span>▶</span>
+        <span data-i18n="hero_video">Presentation video coming soon (HeyGen AI Avatar)</span>
+      </div>
+
+      <div class="hero-cta">
+        <a href="https://www.upwork.com/freelancers/felipeawolff" target="_blank" class="btn btn-primary">
+          <span>⚡</span> <span data-i18n="cta_hire">Hire me on Upwork</span>
+        </a>
+        <a href="#projects" class="btn btn-secondary">
+          <span data-i18n="cta_projects">View Projects</span> <span>→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ─────────────────────────────────────────────────── -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text">
+        <p class="section-label" data-i18n="about_label">// about me</p>
+        <h2 class="section-title" data-i18n="about_title">Building automations<br/>that actually work</h2>
+        <p data-i18n="about_p1">
+          Automation developer specializing in <strong>AI-powered solutions</strong>. I build intelligent assistants, API integrations, and workflow automations using Python, FastAPI, and modern AI models.
+        </p>
+        <p data-i18n="about_p2">
+          From personal AI assistants to enterprise-grade automation pipelines — I turn <strong>repetitive tasks into autonomous systems</strong> that save real time and real money.
+        </p>
+        <p data-i18n="about_p3">
+          Based in <strong>São Paulo, Brazil</strong> · Available for remote freelance work globally.
+        </p>
+
+        <div class="about-stats">
+          <div class="stat-card fade-in fade-in-delay-1">
+            <div class="stat-number">4+</div>
+            <div class="stat-label" data-i18n="stat_projects">Projects in production</div>
+          </div>
+          <div class="stat-card fade-in fade-in-delay-2">
+            <div class="stat-number">431+</div>
+            <div class="stat-label" data-i18n="stat_memory">Conversations indexed in AI memory</div>
+          </div>
+          <div class="stat-card fade-in fade-in-delay-3">
+            <div class="stat-number">3</div>
+            <div class="stat-label" data-i18n="stat_ai">AI layers (never offline)</div>
+          </div>
+          <div class="stat-card fade-in">
+            <div class="stat-number">10+</div>
+            <div class="stat-label" data-i18n="stat_integrations">API integrations built</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-visual">
+        <div class="avatar-box">
+          <div class="avatar-ring"></div>
+          <div class="avatar-inner">
+            <div class="avatar-icon">🤖</div>
+            <div class="avatar-name">FELIPE WOLFF</div>
+            <div class="avatar-title" data-i18n="avatar_title">Automation & AI Developer · São Paulo, BR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ─────────────────────────────────────────────────── -->
+<section id="skills">
+  <div class="container">
+    <p class="section-label" data-i18n="skills_label">// tech stack</p>
+    <h2 class="section-title" data-i18n="skills_title">Tools &amp; Technologies</h2>
+    <p class="section-desc" data-i18n="skills_desc">The technologies I use to build automation solutions and AI-powered systems.</p>
+
+    <div class="skills-categories">
+      <div class="skill-category fade-in">
+        <div class="skill-category-title">⌨️ <span data-i18n="skill_cat_lang">Languages</span></div>
+        <div class="skill-tags">
+          <span class="tag">Python</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">C#</span>
+          <span class="tag">Kotlin</span>
+          <span class="tag">SQL</span>
+        </div>
+      </div>
+
+      <div class="skill-category fade-in fade-in-delay-1">
+        <div class="skill-category-title">⚙️ <span data-i18n="skill_cat_fw">Frameworks</span></div>
+        <div class="skill-tags">
+          <span class="tag">FastAPI</span>
+          <span class="tag">Retrofit</span>
+          <span class="tag">Jetpack Compose</span>
+          <span class="tag">SQLAlchemy</span>
+        </div>
+      </div>
+
+      <div class="skill-category fade-in fade-in-delay-2">
+        <div class="skill-category-title">🤖 <span data-i18n="skill_cat_ai">AI / ML</span></div>
+        <div class="skill-tags">
+          <span class="tag">Google Gemini</span>
+          <span class="tag">Groq / Llama</span>
+          <span class="tag">Ollama</span>
+          <span class="tag">ElevenLabs TTS</span>
+          <span class="tag">ChromaDB</span>
+          <span class="tag">Claude API</span>
+        </div>
+      </div>
+
+      <div class="skill-category fade-in fade-in-delay-3">
+        <div class="skill-category-title">🔌 <span data-i18n="skill_cat_int">Integrations</span></div>
+        <div class="skill-tags">
+          <span class="tag">Google Workspace</span>
+          <span class="tag">Gmail API</span>
+          <span class="tag">Google Drive</span>
+          <span class="tag">Calendar API</span>
+          <span class="tag">Telegram Bot</span>
+          <span class="tag">GitHub API</span>
+          <span class="tag">Trello API</span>
+        </div>
+      </div>
+
+      <div class="skill-category fade-in">
+        <div class="skill-category-title">☁️ <span data-i18n="skill_cat_infra">Infrastructure</span></div>
+        <div class="skill-tags">
+          <span class="tag">Cloudflare Tunnel</span>
+          <span class="tag">Render</span>
+          <span class="tag">Supabase</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">GitHub Pages</span>
+          <span class="tag">NSSM</span>
+        </div>
+      </div>
+
+      <div class="skill-category fade-in fade-in-delay-1">
+        <div class="skill-category-title">📱 <span data-i18n="skill_cat_plat">Platforms</span></div>
+        <div class="skill-tags">
+          <span class="tag">Android (native)</span>
+          <span class="tag">Chrome Extension</span>
+          <span class="tag">NinjaTrader (C#)</span>
+          <span class="tag">n8n</span>
+          <span class="tag">Make / Zapier</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ───────────────────────────────────────────────── -->
+<section id="projects">
+  <div class="container">
+    <p class="section-label" data-i18n="projects_label">// projects</p>
+    <h2 class="section-title" data-i18n="projects_title">What I've Built</h2>
+    <p class="section-desc" data-i18n="projects_desc">Real projects in production — not tutorials, not toy apps.</p>
+
+    <div class="projects-grid">
+
+      <!-- Jarvis -->
+      <div class="project-card featured fade-in">
+        <div class="project-visual mockup-jarvis">
+          <div class="project-mockup">
+            <div class="mockup-icon">🤖</div>
+            <div class="mono" style="color:var(--accent);font-size:0.8rem;">JARVIS v2.0</div>
+            <div class="mockup-lines">
+              <div class="mockup-line green"></div>
+              <div class="mockup-line blue"></div>
+              <div class="mockup-line muted"></div>
+              <div class="mockup-line green short"></div>
+            </div>
+            <div style="color:var(--muted);font-size:0.65rem;text-align:center;padding:0 1rem;">Android · Chrome · Telegram · Web</div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-header">
+            <h3 class="project-title" data-i18n="p1_title">Jarvis — Personal AI Assistant</h3>
+            <span class="project-status status-prod" data-i18n="status_prod">Production</span>
+          </div>
+          <p class="project-desc" data-i18n="p1_desc">
+            Full-stack AI assistant accessible via Android app, Chrome extension, Telegram bot and web interface. Features 3-layer AI fallback (Gemini → Groq → Ollama), Google Workspace integration, automatic server failover, and voice interaction.
+          </p>
+          <ul class="project-features">
+            <li data-i18n="p1_f1">3-layer AI fallback — never offline (Gemini → Groq → Ollama)</li>
+            <li data-i18n="p1_f2">Google Calendar, Gmail &amp; Drive integration via OAuth</li>
+            <li data-i18n="p1_f3">Telegram bot with real-time webhook</li>
+            <li data-i18n="p1_f4">Android app with automatic PC/Cloud failover</li>
+            <li data-i18n="p1_f5">Voice interaction — ElevenLabs TTS + WhatsApp-style button</li>
+            <li data-i18n="p1_f6">Vector memory — ChromaDB with 431+ conversations indexed</li>
+          </ul>
+          <div class="project-tech">
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">FastAPI</span>
+            <span class="tech-tag">Gemini</span>
+            <span class="tech-tag">Groq</span>
+            <span class="tech-tag">Supabase</span>
+            <span class="tech-tag">Kotlin</span>
+            <span class="tech-tag">ChromaDB</span>
+            <span class="tech-tag">Telegram</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/felipeawolff-hue/jarvis-backend" target="_blank" class="project-link">
+              ⌥ GitHub
+            </a>
+            <a href="https://jarvis-backend-547t.onrender.com/health" target="_blank" class="project-link">
+              ↗ <span data-i18n="link_live">Live Demo</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cash Flow -->
+      <div class="project-card fade-in">
+        <div class="project-visual mockup-finance">
+          <div class="project-mockup">
+            <div class="mockup-icon">💰</div>
+            <div class="mono" style="color:var(--accent2);font-size:0.8rem;">CASH FLOW AI</div>
+            <div class="mockup-lines">
+              <div class="mockup-line blue"></div>
+              <div class="mockup-line green short"></div>
+              <div class="mockup-line muted"></div>
+              <div class="mockup-line blue" style="width:60%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-header">
+            <h3 class="project-title" data-i18n="p2_title">Personal Cash Flow Manager</h3>
+            <span class="project-status status-working" data-i18n="status_working">Working</span>
+          </div>
+          <p class="project-desc" data-i18n="p2_desc">
+            AI-powered personal finance tracker with recurring transactions, Google Sheets sync, and Gemini AI function calling for natural language budget queries.
+          </p>
+          <ul class="project-features">
+            <li data-i18n="p2_f1">Weekly / biweekly / monthly views with projections</li>
+            <li data-i18n="p2_f2">Checkbox for paid expenses with auto-updated totals</li>
+            <li data-i18n="p2_f3">Color-coded financial health indicators</li>
+            <li data-i18n="p2_f4">Google Sheets sync via Apps Script</li>
+            <li data-i18n="p2_f5">AI queries: "How much did I spend on food this month?"</li>
+          </ul>
+          <div class="project-tech">
+            <span class="tech-tag">HTML/JS</span>
+            <span class="tech-tag">Supabase</span>
+            <span class="tech-tag">Gemini AI</span>
+            <span class="tech-tag">Google Sheets API</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/felipeawolff" target="_blank" class="project-link">⌥ GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- NinjaTrader -->
+      <div class="project-card fade-in">
+        <div class="project-visual mockup-ninja">
+          <div class="project-mockup">
+            <div class="mockup-icon">📈</div>
+            <div class="mono" style="color:#ff6b6b;font-size:0.8rem;">NINJATRADER ADDONS</div>
+            <div class="mockup-lines">
+              <div class="mockup-line" style="background:#ff6b6b;width:75%;opacity:0.5;"></div>
+              <div class="mockup-line muted"></div>
+              <div class="mockup-line" style="background:#ff6b6b;width:45%;opacity:0.5;"></div>
+              <div class="mockup-line muted short"></div>
+            </div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-header">
+            <h3 class="project-title" data-i18n="p3_title">NinjaTrader Custom Indicators (C#)</h3>
+            <span class="project-status status-working" data-i18n="status_working">Working</span>
+          </div>
+          <p class="project-desc" data-i18n="p3_desc">
+            Custom trading indicators for NinjaTrader 8: region export/import via CSV and automatic Low Volume Node detection from Volume Profile data.
+          </p>
+          <ul class="project-features">
+            <li data-i18n="p3_f1">ExportYRegions / ImportYRegions — CSV-based region management</li>
+            <li data-i18n="p3_f2">AutoLVN — automatic Low Volume Node detection</li>
+            <li data-i18n="p3_f3">Compatible with ProVolumeProfileTickByTick</li>
+          </ul>
+          <div class="project-tech">
+            <span class="tech-tag">C#</span>
+            <span class="tech-tag">NinjaTrader API</span>
+            <span class="tech-tag">Volume Profile</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/felipeawolff" target="_blank" class="project-link">⌥ GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email Organizer -->
+      <div class="project-card fade-in">
+        <div class="project-visual mockup-email">
+          <div class="project-mockup">
+            <div class="mockup-icon">📧</div>
+            <div class="mono" style="color:#a78bfa;font-size:0.8rem;">EMAIL AGENT</div>
+            <div class="mockup-lines">
+              <div class="mockup-line" style="background:#a78bfa;width:80%;opacity:0.5;"></div>
+              <div class="mockup-line muted"></div>
+              <div class="mockup-line" style="background:#a78bfa;width:55%;opacity:0.5;"></div>
+              <div class="mockup-line muted short"></div>
+            </div>
+          </div>
+        </div>
+        <div class="project-info">
+          <div class="project-header">
+            <h3 class="project-title" data-i18n="p4_title">Email Organizer Agent</h3>
+            <span class="project-status status-built" data-i18n="status_built">Built</span>
+          </div>
+          <p class="project-desc" data-i18n="p4_desc">
+            AI-powered email categorization and auto-reply system using Gmail API and Claude Haiku. Automatically sorts incoming emails by priority and category.
+          </p>
+          <ul class="project-features">
+            <li data-i18n="p4_f1">Auto-categorization of emails by topic and urgency</li>
+            <li data-i18n="p4_f2">Priority detection with smart labeling</li>
+            <li data-i18n="p4_f3">Optional AI auto-reply drafts</li>
+            <li data-i18n="p4_f4">Cost: ~$0.50/month for AI processing</li>
+          </ul>
+          <div class="project-tech">
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">Gmail API</span>
+            <span class="tech-tag">Claude Haiku</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/felipeawolff" target="_blank" class="project-link">⌥ GitHub</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICES ───────────────────────────────────────────────── -->
+<section id="services">
+  <div class="container">
+    <p class="section-label" data-i18n="services_label">// what I offer</p>
+    <h2 class="section-title" data-i18n="services_title">Services</h2>
+    <p class="section-desc" data-i18n="services_desc">I don't just write code — I build systems that work autonomously, save time, and scale.</p>
+
+    <div class="services-grid">
+
+      <div class="service-card fade-in">
+        <div class="service-icon">🤖</div>
+        <h3 class="service-title" data-i18n="svc1_title">AI Automation Development</h3>
+        <p class="service-desc" data-i18n="svc1_desc">Custom AI assistants and intelligent automation pipelines using Gemini, GPT, Claude, or open-source models. Includes multi-step workflows, fallback chains, and memory systems.</p>
+        <span class="service-price" data-i18n="svc1_price">$500 – $2,000</span>
+      </div>
+
+      <div class="service-card fade-in fade-in-delay-1">
+        <div class="service-icon">🔌</div>
+        <h3 class="service-title" data-i18n="svc2_title">API Integration</h3>
+        <p class="service-desc" data-i18n="svc2_desc">Connect your tools — CRMs, Google Workspace, Slack, Telegram, payment gateways, and more. Full end-to-end integration with error handling and monitoring.</p>
+        <span class="service-price" data-i18n="svc2_price">$300 – $1,200</span>
+      </div>
+
+      <div class="service-card fade-in fade-in-delay-2">
+        <div class="service-icon">🕷️</div>
+        <h3 class="service-title" data-i18n="svc3_title">Web Scraping &amp; Data Extraction</h3>
+        <p class="service-desc" data-i18n="svc3_desc">Automated data collection from any website. Structured output to databases, spreadsheets, or APIs. Handles dynamic pages, pagination, and anti-bot measures.</p>
+        <span class="service-price" data-i18n="svc3_price">$200 – $800</span>
+      </div>
+
+      <div class="service-card fade-in fade-in-delay-3">
+        <div class="service-icon">🤙</div>
+        <h3 class="service-title" data-i18n="svc4_title">Bot Development</h3>
+        <p class="service-desc" data-i18n="svc4_desc">Telegram, Discord, WhatsApp or custom bots with AI capabilities. Customer support bots, notification systems, command interfaces — deployed and maintained.</p>
+        <span class="service-price" data-i18n="svc4_price">$300 – $1,500</span>
+      </div>
+
+      <div class="service-card fade-in">
+        <div class="service-icon">⚡</div>
+        <h3 class="service-title" data-i18n="svc5_title">Workflow Automation (n8n / Make)</h3>
+        <p class="service-desc" data-i18n="svc5_desc">No-code / low-code automation using n8n, Make (Zapier), or custom scripts. Automate repetitive tasks between your existing tools without rebuilding everything.</p>
+        <span class="service-price" data-i18n="svc5_price">$150 – $600</span>
+      </div>
+
+      <div class="service-card fade-in fade-in-delay-1">
+        <div class="service-icon">📊</div>
+        <h3 class="service-title" data-i18n="svc6_title">Backend API Development</h3>
+        <p class="service-desc" data-i18n="svc6_desc">FastAPI / Python backends with database integration (Supabase/PostgreSQL), authentication, and cloud deployment (Render, Railway, VPS). Clean, documented, production-ready.</p>
+        <span class="service-price" data-i18n="svc6_price">$400 – $1,500</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ───────────────────────────────────────────── -->
+<section id="testimonials">
+  <div class="container">
+    <p class="section-label" data-i18n="test_label">// testimonials</p>
+    <h2 class="section-title" data-i18n="test_title">What Clients Say</h2>
+
+    <div class="testimonials-placeholder fade-in">
+      <div class="icon">⭐</div>
+      <p data-i18n="test_placeholder">First client projects coming soon. Building a track record — starting with results that speak for themselves.</p>
+      <a href="#contact" class="btn btn-secondary" style="display:inline-flex;">
+        <span data-i18n="test_cta">Be my first client</span> <span>→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ────────────────────────────────────────────────── -->
+<section id="contact">
+  <div class="container">
+    <p class="section-label" data-i18n="contact_label">// contact</p>
+    <h2 class="section-title" data-i18n="contact_title">Let's Build Something</h2>
+    <p class="section-desc" data-i18n="contact_desc">Have a repetitive process that needs automating? Let's talk.</p>
+
+    <div class="contact-grid">
+      <div>
+        <div class="contact-links">
+          <a href="mailto:felipeawolff@gmail.com" class="contact-link">
+            <div class="contact-link-icon">✉️</div>
+            <div class="contact-link-text">
+              <span class="contact-link-label">Email</span>
+              <span class="contact-link-value">felipeawolff@gmail.com</span>
+            </div>
+          </a>
+          <a href="https://github.com/felipeawolff" target="_blank" class="contact-link">
+            <div class="contact-link-icon">⌥</div>
+            <div class="contact-link-text">
+              <span class="contact-link-label">GitHub</span>
+              <span class="contact-link-value">github.com/felipeawolff</span>
+            </div>
+          </a>
+          <a href="https://www.upwork.com/freelancers/felipeawolff" target="_blank" class="contact-link">
+            <div class="contact-link-icon">⚡</div>
+            <div class="contact-link-text">
+              <span class="contact-link-label">Upwork</span>
+              <span class="contact-link-value">Felipe Wolff on Upwork</span>
+            </div>
+          </a>
+        </div>
+
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--accent);margin-bottom:0.5rem;">// availability</div>
+          <p style="font-size:0.85rem;color:var(--muted);" data-i18n="contact_avail">Available for new projects. Response within 24h. Remote work only.</p>
+        </div>
+      </div>
+
+      <form class="contact-form" action="https://formspree.io/f/mnjoqyzr" method="POST">
+        <div class="form-group">
+          <label for="name" data-i18n="form_name">Your name</label>
+          <input type="text" id="name" name="name" required placeholder="John Smith" />
+        </div>
+        <div class="form-group">
+          <label for="email" data-i18n="form_email">Email</label>
+          <input type="email" id="email" name="email" required placeholder="john@company.com" />
+        </div>
+        <div class="form-group">
+          <label for="service" data-i18n="form_service">Service</label>
+          <select id="service" name="service">
+            <option value="" data-i18n="form_service_opt0">Select a service...</option>
+            <option value="ai" data-i18n="form_service_opt1">AI Automation</option>
+            <option value="api" data-i18n="form_service_opt2">API Integration</option>
+            <option value="scraping" data-i18n="form_service_opt3">Web Scraping</option>
+            <option value="bot" data-i18n="form_service_opt4">Bot Development</option>
+            <option value="workflow" data-i18n="form_service_opt5">Workflow Automation</option>
+            <option value="backend" data-i18n="form_service_opt6">Backend Development</option>
+            <option value="other" data-i18n="form_service_opt7">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message" data-i18n="form_message">Tell me about your project</label>
+          <textarea id="message" name="message" required placeholder="Describe what you need automated..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">
+          <span>→</span> <span data-i18n="form_submit">Send Message</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-logo">fw.dev</div>
+    <p class="footer-copy" data-i18n="footer_copy">© 2026 Felipe Wolff · São Paulo, Brazil</p>
+    <div class="footer-links">
+      <a href="https://github.com/felipeawolff" target="_blank">GitHub</a>
+      <a href="mailto:felipeawolff@gmail.com">Email</a>
+      <a href="https://www.upwork.com/freelancers/felipeawolff" target="_blank">Upwork</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+<script>
+/* ── Translations ───────────────────────────────────────────── */
+const i18n = {
+  en: {
+    nav_about:       "About",
+    nav_skills:      "Skills",
+    nav_projects:    "Projects",
+    nav_services:    "Services",
+    nav_contact:     "Contact",
+
+    hero_badge:      "Available for freelance",
+    hero_role:       "Automation & AI Solutions Developer",
+    hero_tagline_pre:  '"I build ',
+    hero_tagline_em:   'digital employees',
+    hero_tagline_post: ' — AI-powered automations that work 24/7 so you don\'t have to."',
+    hero_video:      "Presentation video coming soon (HeyGen AI Avatar)",
+    cta_hire:        "Hire me on Upwork",
+    cta_projects:    "View Projects",
+
+    about_label:  "// about me",
+    about_title:  "Building automations\nthat actually work",
+    about_p1:     'Automation developer specializing in <strong>AI-powered solutions</strong>. I build intelligent assistants, API integrations, and workflow automations using Python, FastAPI, and modern AI models.',
+    about_p2:     'From personal AI assistants to enterprise-grade automation pipelines — I turn <strong>repetitive tasks into autonomous systems</strong> that save real time and real money.',
+    about_p3:     'Based in <strong>São Paulo, Brazil</strong> · Available for remote freelance work globally.',
+    stat_projects:    "Projects in production",
+    stat_memory:      "Conversations indexed in AI memory",
+    stat_ai:          "AI layers (never offline)",
+    stat_integrations:"API integrations built",
+    avatar_title:  "Automation & AI Developer · São Paulo, BR",
+
+    skills_label: "// tech stack",
+    skills_title: "Tools & Technologies",
+    skills_desc:  "The technologies I use to build automation solutions and AI-powered systems.",
+    skill_cat_lang:  "Languages",
+    skill_cat_fw:    "Frameworks",
+    skill_cat_ai:    "AI / ML",
+    skill_cat_int:   "Integrations",
+    skill_cat_infra: "Infrastructure",
+    skill_cat_plat:  "Platforms",
+
+    projects_label: "// projects",
+    projects_title: "What I've Built",
+    projects_desc:  "Real projects in production — not tutorials, not toy apps.",
+
+    p1_title: "Jarvis — Personal AI Assistant",
+    p1_desc:  "Full-stack AI assistant accessible via Android app, Chrome extension, Telegram bot and web interface. Features 3-layer AI fallback (Gemini → Groq → Ollama), Google Workspace integration, automatic server failover, and voice interaction.",
+    p1_f1: "3-layer AI fallback — never offline (Gemini → Groq → Ollama)",
+    p1_f2: "Google Calendar, Gmail & Drive integration via OAuth",
+    p1_f3: "Telegram bot with real-time webhook",
+    p1_f4: "Android app with automatic PC/Cloud failover",
+    p1_f5: "Voice interaction — ElevenLabs TTS + WhatsApp-style button",
+    p1_f6: "Vector memory — ChromaDB with 431+ conversations indexed",
+
+    p2_title: "Personal Cash Flow Manager",
+    p2_desc:  "AI-powered personal finance tracker with recurring transactions, Google Sheets sync, and Gemini AI function calling for natural language budget queries.",
+    p2_f1: "Weekly / biweekly / monthly views with projections",
+    p2_f2: "Checkbox for paid expenses with auto-updated totals",
+    p2_f3: "Color-coded financial health indicators",
+    p2_f4: "Google Sheets sync via Apps Script",
+    p2_f5: 'AI queries: "How much did I spend on food this month?"',
+
+    p3_title: "NinjaTrader Custom Indicators (C#)",
+    p3_desc:  "Custom trading indicators for NinjaTrader 8: region export/import via CSV and automatic Low Volume Node detection from Volume Profile data.",
+    p3_f1: "ExportYRegions / ImportYRegions — CSV-based region management",
+    p3_f2: "AutoLVN — automatic Low Volume Node detection",
+    p3_f3: "Compatible with ProVolumeProfileTickByTick",
+
+    p4_title: "Email Organizer Agent",
+    p4_desc:  "AI-powered email categorization and auto-reply system using Gmail API and Claude Haiku. Automatically sorts incoming emails by priority and category.",
+    p4_f1: "Auto-categorization of emails by topic and urgency",
+    p4_f2: "Priority detection with smart labeling",
+    p4_f3: "Optional AI auto-reply drafts",
+    p4_f4: "Cost: ~$0.50/month for AI processing",
+
+    status_prod:    "Production",
+    status_working: "Working",
+    status_built:   "Built",
+    link_live:      "Live Demo",
+
+    services_label: "// what I offer",
+    services_title: "Services",
+    services_desc:  "I don't just write code — I build systems that work autonomously, save time, and scale.",
+
+    svc1_title: "AI Automation Development",
+    svc1_desc:  "Custom AI assistants and intelligent automation pipelines using Gemini, GPT, Claude, or open-source models. Includes multi-step workflows, fallback chains, and memory systems.",
+    svc1_price: "$500 – $2,000",
+
+    svc2_title: "API Integration",
+    svc2_desc:  "Connect your tools — CRMs, Google Workspace, Slack, Telegram, payment gateways, and more. Full end-to-end integration with error handling and monitoring.",
+    svc2_price: "$300 – $1,200",
+
+    svc3_title: "Web Scraping & Data Extraction",
+    svc3_desc:  "Automated data collection from any website. Structured output to databases, spreadsheets, or APIs. Handles dynamic pages, pagination, and anti-bot measures.",
+    svc3_price: "$200 – $800",
+
+    svc4_title: "Bot Development",
+    svc4_desc:  "Telegram, Discord, WhatsApp or custom bots with AI capabilities. Customer support bots, notification systems, command interfaces — deployed and maintained.",
+    svc4_price: "$300 – $1,500",
+
+    svc5_title: "Workflow Automation (n8n / Make)",
+    svc5_desc:  "No-code / low-code automation using n8n, Make (Zapier), or custom scripts. Automate repetitive tasks between your existing tools without rebuilding everything.",
+    svc5_price: "$150 – $600",
+
+    svc6_title: "Backend API Development",
+    svc6_desc:  "FastAPI / Python backends with database integration (Supabase/PostgreSQL), authentication, and cloud deployment. Clean, documented, production-ready.",
+    svc6_price: "$400 – $1,500",
+
+    test_label:       "// testimonials",
+    test_title:       "What Clients Say",
+    test_placeholder: "First client projects coming soon. Building a track record — starting with results that speak for themselves.",
+    test_cta:         "Be my first client",
+
+    contact_label: "// contact",
+    contact_title: "Let's Build Something",
+    contact_desc:  "Have a repetitive process that needs automating? Let's talk.",
+    contact_avail: "Available for new projects. Response within 24h. Remote work only.",
+    form_name:     "Your name",
+    form_email:    "Email",
+    form_service:  "Service",
+    form_service_opt0: "Select a service...",
+    form_service_opt1: "AI Automation",
+    form_service_opt2: "API Integration",
+    form_service_opt3: "Web Scraping",
+    form_service_opt4: "Bot Development",
+    form_service_opt5: "Workflow Automation",
+    form_service_opt6: "Backend Development",
+    form_service_opt7: "Other",
+    form_message:  "Tell me about your project",
+    form_submit:   "Send Message",
+
+    footer_copy: "© 2026 Felipe Wolff · São Paulo, Brazil",
+  },
+
+  es: {
+    nav_about:    "Sobre mí",
+    nav_skills:   "Habilidades",
+    nav_projects: "Proyectos",
+    nav_services: "Servicios",
+    nav_contact:  "Contacto",
+
+    hero_badge:      "Disponible para freelance",
+    hero_role:       "Desarrollador de Automatización e IA",
+    hero_tagline_pre:  '"Construyo ',
+    hero_tagline_em:   'empleados digitales',
+    hero_tagline_post: ' — automatizaciones con IA que trabajan 24/7 para que usted no tenga que hacerlo."',
+    hero_video:      "Vídeo de presentación próximamente (HeyGen AI Avatar)",
+    cta_hire:        "Contratarme en Upwork",
+    cta_projects:    "Ver Proyectos",
+
+    about_label:  "// sobre mí",
+    about_title:  "Construyendo automatizaciones\nque realmente funcionan",
+    about_p1:     'Desarrollador de automatización especializado en <strong>soluciones con IA</strong>. Construyo asistentes inteligentes, integraciones de API y automatizaciones de flujo de trabajo usando Python, FastAPI y modelos de IA modernos.',
+    about_p2:     'Desde asistentes personales de IA hasta pipelines de automatización empresarial — convierto <strong>tareas repetitivas en sistemas autónomos</strong> que ahorran tiempo y dinero real.',
+    about_p3:     'Basado en <strong>São Paulo, Brasil</strong> · Disponible para trabajo freelance remoto globalmente.',
+    stat_projects:    "Proyectos en producción",
+    stat_memory:      "Conversaciones indexadas en memoria IA",
+    stat_ai:          "Capas de IA (nunca offline)",
+    stat_integrations:"Integraciones de API construidas",
+    avatar_title:  "Desarrollador de Automatización e IA · São Paulo, BR",
+
+    skills_label: "// stack técnico",
+    skills_title: "Herramientas y Tecnologías",
+    skills_desc:  "Las tecnologías que utilizo para construir soluciones de automatización y sistemas con IA.",
+    skill_cat_lang:  "Lenguajes",
+    skill_cat_fw:    "Frameworks",
+    skill_cat_ai:    "IA / ML",
+    skill_cat_int:   "Integraciones",
+    skill_cat_infra: "Infraestructura",
+    skill_cat_plat:  "Plataformas",
+
+    projects_label: "// proyectos",
+    projects_title: "Lo que he Construido",
+    projects_desc:  "Proyectos reales en producción — no tutoriales, no aplicaciones de juguete.",
+
+    p1_title: "Jarvis — Asistente Personal de IA",
+    p1_desc:  "Asistente de IA full-stack accesible via app Android, extensión Chrome, bot de Telegram e interfaz web. Sistema de 3 capas de IA (Gemini → Groq → Ollama), integración con Google Workspace, failover automático de servidor e interacción por voz.",
+    p1_f1: "3 capas de IA — nunca offline (Gemini → Groq → Ollama)",
+    p1_f2: "Integración con Google Calendar, Gmail y Drive via OAuth",
+    p1_f3: "Bot de Telegram con webhook en tiempo real",
+    p1_f4: "App Android con failover automático PC/Nube",
+    p1_f5: "Interacción por voz — ElevenLabs TTS + botón estilo WhatsApp",
+    p1_f6: "Memoria vectorial — ChromaDB con 431+ conversaciones indexadas",
+
+    p2_title: "Gestor de Flujo de Caja Personal",
+    p2_desc:  "Rastreador de finanzas personales con IA, transacciones recurrentes, sincronización con Google Sheets y función calling de Gemini AI para consultas en lenguaje natural.",
+    p2_f1: "Vistas semanales / quincenales / mensuales con proyecciones",
+    p2_f2: "Casillas de verificación para gastos pagados con totales actualizados",
+    p2_f3: "Indicadores de salud financiera codificados por colores",
+    p2_f4: "Sincronización con Google Sheets via Apps Script",
+    p2_f5: 'Consultas IA: "¿Cuánto gasté en comida este mes?"',
+
+    p3_title: "Indicadores Personalizados NinjaTrader (C#)",
+    p3_desc:  "Indicadores de trading personalizados para NinjaTrader 8: exportación/importación de regiones via CSV y detección automática de Low Volume Nodes desde datos de Volume Profile.",
+    p3_f1: "ExportYRegions / ImportYRegions — gestión de regiones via CSV",
+    p3_f2: "AutoLVN — detección automática de Low Volume Nodes",
+    p3_f3: "Compatible con ProVolumeProfileTickByTick",
+
+    p4_title: "Agente Organizador de Emails",
+    p4_desc:  "Sistema de categorización de emails y auto-respuesta con IA usando Gmail API y Claude Haiku. Ordena automáticamente los emails entrantes por prioridad y categoría.",
+    p4_f1: "Auto-categorización de emails por tema y urgencia",
+    p4_f2: "Detección de prioridad con etiquetado inteligente",
+    p4_f3: "Borradores opcionales de auto-respuesta con IA",
+    p4_f4: "Costo: ~$0.50/mes en procesamiento de IA",
+
+    status_prod:    "Producción",
+    status_working: "Funcionando",
+    status_built:   "Construido",
+    link_live:      "Demo en vivo",
+
+    services_label: "// lo que ofrezco",
+    services_title: "Servicios",
+    services_desc:  "No solo escribo código — construyo sistemas que funcionan de manera autónoma, ahorran tiempo y escalan.",
+
+    svc1_title: "Desarrollo de Automatización con IA",
+    svc1_desc:  "Asistentes de IA personalizados y pipelines de automatización inteligente usando Gemini, GPT, Claude o modelos open-source. Incluye flujos multi-paso, cadenas de fallback y sistemas de memoria.",
+    svc1_price: "$500 – $2,000",
+
+    svc2_title: "Integración de API",
+    svc2_desc:  "Conecte sus herramientas — CRMs, Google Workspace, Slack, Telegram, pasarelas de pago y más. Integración completa con manejo de errores y monitoreo.",
+    svc2_price: "$300 – $1,200",
+
+    svc3_title: "Web Scraping y Extracción de Datos",
+    svc3_desc:  "Recolección automatizada de datos de cualquier sitio web. Salida estructurada a bases de datos, hojas de cálculo o APIs. Maneja páginas dinámicas y medidas anti-bot.",
+    svc3_price: "$200 – $800",
+
+    svc4_title: "Desarrollo de Bots",
+    svc4_desc:  "Bots de Telegram, Discord, WhatsApp o personalizados con capacidades de IA. Bots de soporte al cliente, sistemas de notificación, interfaces de comandos — desplegados y mantenidos.",
+    svc4_price: "$300 – $1,500",
+
+    svc5_title: "Automatización de Flujos (n8n / Make)",
+    svc5_desc:  "Automatización no-code / low-code usando n8n, Make (Zapier) o scripts personalizados. Automatice tareas repetitivas entre sus herramientas existentes sin reconstruir todo.",
+    svc5_price: "$150 – $600",
+
+    svc6_title: "Desarrollo de Backend API",
+    svc6_desc:  "Backends FastAPI / Python con integración de base de datos (Supabase/PostgreSQL), autenticación y despliegue en la nube. Limpio, documentado, listo para producción.",
+    svc6_price: "$400 – $1,500",
+
+    test_label:       "// testimonios",
+    test_title:       "Lo que dicen los clientes",
+    test_placeholder: "Primeros proyectos de clientes próximamente. Construyendo un historial — empezando con resultados que hablan por sí mismos.",
+    test_cta:         "Sé mi primer cliente",
+
+    contact_label: "// contacto",
+    contact_title: "Construyamos algo juntos",
+    contact_desc:  "¿Tiene un proceso repetitivo que necesita automatizar? Hablemos.",
+    contact_avail: "Disponible para nuevos proyectos. Respuesta en 24h. Solo trabajo remoto.",
+    form_name:     "Su nombre",
+    form_email:    "Email",
+    form_service:  "Servicio",
+    form_service_opt0: "Seleccione un servicio...",
+    form_service_opt1: "Automatización con IA",
+    form_service_opt2: "Integración de API",
+    form_service_opt3: "Web Scraping",
+    form_service_opt4: "Desarrollo de Bot",
+    form_service_opt5: "Automatización de Flujos",
+    form_service_opt6: "Desarrollo Backend",
+    form_service_opt7: "Otro",
+    form_message:  "Cuénteme sobre su proyecto",
+    form_submit:   "Enviar Mensaje",
+
+    footer_copy: "© 2026 Felipe Wolff · São Paulo, Brasil",
+  },
+
+  pt: {
+    nav_about:    "Sobre",
+    nav_skills:   "Skills",
+    nav_projects: "Projetos",
+    nav_services: "Serviços",
+    nav_contact:  "Contato",
+
+    hero_badge:      "Disponível para freelance",
+    hero_role:       "Desenvolvedor de Automação e IA",
+    hero_tagline_pre:  '"Eu construo ',
+    hero_tagline_em:   'funcionários digitais',
+    hero_tagline_post: ' — automações com IA que trabalham 24/7 para que você não precise."',
+    hero_video:      "Vídeo de apresentação em breve (HeyGen AI Avatar)",
+    cta_hire:        "Me contrate no Upwork",
+    cta_projects:    "Ver Projetos",
+
+    about_label:  "// sobre mim",
+    about_title:  "Construindo automações\nque realmente funcionam",
+    about_p1:     'Desenvolvedor de automação especializado em <strong>soluções com IA</strong>. Construo assistentes inteligentes, integrações de API e automações de fluxo de trabalho usando Python, FastAPI e modelos de IA modernos.',
+    about_p2:     'De assistentes pessoais de IA a pipelines de automação empresarial — transformo <strong>tarefas repetitivas em sistemas autônomos</strong> que economizam tempo e dinheiro real.',
+    about_p3:     'Baseado em <strong>São Paulo, Brasil</strong> · Disponível para trabalho freelance remoto globalmente.',
+    stat_projects:    "Projetos em produção",
+    stat_memory:      "Conversas indexadas na memória IA",
+    stat_ai:          "Camadas de IA (nunca offline)",
+    stat_integrations:"Integrações de API construídas",
+    avatar_title:  "Desenvolvedor de Automação e IA · São Paulo, BR",
+
+    skills_label: "// stack técnica",
+    skills_title: "Ferramentas e Tecnologias",
+    skills_desc:  "As tecnologias que uso para construir soluções de automação e sistemas com IA.",
+    skill_cat_lang:  "Linguagens",
+    skill_cat_fw:    "Frameworks",
+    skill_cat_ai:    "IA / ML",
+    skill_cat_int:   "Integrações",
+    skill_cat_infra: "Infraestrutura",
+    skill_cat_plat:  "Plataformas",
+
+    projects_label: "// projetos",
+    projects_title: "O que eu construí",
+    projects_desc:  "Projetos reais em produção — não tutoriais, não apps de brinquedo.",
+
+    p1_title: "Jarvis — Assistente Pessoal de IA",
+    p1_desc:  "Assistente de IA full-stack acessível via app Android, extensão Chrome, bot do Telegram e interface web. Sistema de 3 camadas de IA (Gemini → Groq → Ollama), integração Google Workspace, failover automático de servidor e interação por voz.",
+    p1_f1: "3 camadas de IA — nunca offline (Gemini → Groq → Ollama)",
+    p1_f2: "Integração com Google Calendar, Gmail e Drive via OAuth",
+    p1_f3: "Bot do Telegram com webhook em tempo real",
+    p1_f4: "App Android com failover automático PC/Nuvem",
+    p1_f5: "Interação por voz — ElevenLabs TTS + botão estilo WhatsApp",
+    p1_f6: "Memória vetorial — ChromaDB com 431+ conversas indexadas",
+
+    p2_title: "Gerenciador de Fluxo de Caixa Pessoal",
+    p2_desc:  "Rastreador de finanças pessoais com IA, transações recorrentes, sincronização com Google Sheets e function calling do Gemini AI para consultas em linguagem natural.",
+    p2_f1: "Visualizações semanal / quinzenal / mensal com projeções",
+    p2_f2: "Checkbox para despesas pagas com totais atualizados",
+    p2_f3: "Indicadores de saúde financeira com código de cores",
+    p2_f4: "Sincronização com Google Sheets via Apps Script",
+    p2_f5: 'Consultas IA: "Quanto gastei com comida esse mês?"',
+
+    p3_title: "Indicadores Customizados NinjaTrader (C#)",
+    p3_desc:  "Indicadores de trading customizados para NinjaTrader 8: exportação/importação de regiões via CSV e detecção automática de Low Volume Nodes a partir de dados do Volume Profile.",
+    p3_f1: "ExportYRegions / ImportYRegions — gerenciamento de regiões via CSV",
+    p3_f2: "AutoLVN — detecção automática de Low Volume Nodes",
+    p3_f3: "Compatível com ProVolumeProfileTickByTick",
+
+    p4_title: "Agente Organizador de E-mails",
+    p4_desc:  "Sistema de categorização de e-mails e auto-resposta com IA usando Gmail API e Claude Haiku. Ordena automaticamente os e-mails recebidos por prioridade e categoria.",
+    p4_f1: "Auto-categorização de e-mails por assunto e urgência",
+    p4_f2: "Detecção de prioridade com rotulagem inteligente",
+    p4_f3: "Rascunhos opcionais de auto-resposta com IA",
+    p4_f4: "Custo: ~$0,50/mês em processamento de IA",
+
+    status_prod:    "Produção",
+    status_working: "Funcionando",
+    status_built:   "Construído",
+    link_live:      "Demo ao vivo",
+
+    services_label: "// o que ofereço",
+    services_title: "Serviços",
+    services_desc:  "Não escrevo apenas código — construo sistemas que funcionam de forma autônoma, economizam tempo e escalam.",
+
+    svc1_title: "Desenvolvimento de Automação com IA",
+    svc1_desc:  "Assistentes de IA customizados e pipelines de automação inteligente usando Gemini, GPT, Claude ou modelos open-source. Inclui fluxos multi-etapa, cadeias de fallback e sistemas de memória.",
+    svc1_price: "$500 – $2.000",
+
+    svc2_title: "Integração de API",
+    svc2_desc:  "Conecte suas ferramentas — CRMs, Google Workspace, Slack, Telegram, gateways de pagamento e mais. Integração ponta a ponta com tratamento de erros e monitoramento.",
+    svc2_price: "$300 – $1.200",
+
+    svc3_title: "Web Scraping e Extração de Dados",
+    svc3_desc:  "Coleta automatizada de dados de qualquer site. Saída estruturada para bancos de dados, planilhas ou APIs. Lida com páginas dinâmicas, paginação e medidas anti-bot.",
+    svc3_price: "$200 – $800",
+
+    svc4_title: "Desenvolvimento de Bot",
+    svc4_desc:  "Bots para Telegram, Discord, WhatsApp ou customizados com capacidades de IA. Bots de suporte ao cliente, sistemas de notificação, interfaces de comandos — implantados e mantidos.",
+    svc4_price: "$300 – $1.500",
+
+    svc5_title: "Automação de Fluxos (n8n / Make)",
+    svc5_desc:  "Automação no-code / low-code usando n8n, Make (Zapier) ou scripts customizados. Automatize tarefas repetitivas entre suas ferramentas existentes sem reconstruir tudo.",
+    svc5_price: "$150 – $600",
+
+    svc6_title: "Desenvolvimento de Backend API",
+    svc6_desc:  "Backends FastAPI / Python com integração de banco de dados (Supabase/PostgreSQL), autenticação e deploy em nuvem. Limpo, documentado, pronto para produção.",
+    svc6_price: "$400 – $1.500",
+
+    test_label:       "// depoimentos",
+    test_title:       "O que dizem os clientes",
+    test_placeholder: "Primeiros projetos de clientes em breve. Construindo um histórico — começando com resultados que falam por si.",
+    test_cta:         "Seja meu primeiro cliente",
+
+    contact_label: "// contato",
+    contact_title: "Vamos construir algo",
+    contact_desc:  "Tem um processo repetitivo que precisa de automação? Vamos conversar.",
+    contact_avail: "Disponível para novos projetos. Resposta em 24h. Apenas trabalho remoto.",
+    form_name:     "Seu nome",
+    form_email:    "E-mail",
+    form_service:  "Serviço",
+    form_service_opt0: "Selecione um serviço...",
+    form_service_opt1: "Automação com IA",
+    form_service_opt2: "Integração de API",
+    form_service_opt3: "Web Scraping",
+    form_service_opt4: "Desenvolvimento de Bot",
+    form_service_opt5: "Automação de Fluxos",
+    form_service_opt6: "Desenvolvimento Backend",
+    form_service_opt7: "Outro",
+    form_message:  "Me conte sobre seu projeto",
+    form_submit:   "Enviar Mensagem",
+
+    footer_copy: "© 2026 Felipe Wolff · São Paulo, Brasil",
+  }
+};
+
+/* ── Language Engine ────────────────────────────────────────── */
+let currentLang = 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+  const t = i18n[lang];
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        // placeholder handled separately
+      } else if (key.startsWith('about_p') || key.startsWith('contact_avail')) {
+        el.innerHTML = t[key];
+      } else {
+        el.textContent = t[key];
+      }
+    }
+  });
+
+  // Update html lang attribute
+  document.documentElement.lang = lang;
+
+  // Update active button
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === lang);
+  });
+
+  // Close mobile menu if open
+  document.getElementById('nav-links').classList.remove('open');
+}
+
+/* ── Mobile Menu ────────────────────────────────────────────── */
+function toggleMenu() {
+  document.getElementById('nav-links').classList.toggle('open');
+}
+
+/* ── Scroll Animations ──────────────────────────────────────── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+/* ── Active nav link on scroll ──────────────────────────────── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 100;
+    if (window.scrollY >= top) current = section.getAttribute('id');
+  });
+  navLinks.forEach(link => {
+    link.style.color = link.getAttribute('href') === `#${current}`
+      ? 'var(--text)' : '';
+  });
+}, { passive: true });
+</script>
+
+</body>
+</html>
