@@ -258,6 +258,74 @@ footer a:hover { color: var(--accent-h); }
 }
 @keyframes rot { to { transform: rotate(360deg); } }
 
+/* ── Voice list ── */
+.voice-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-radius: 9px;
+  background: var(--surface2); border: 1px solid var(--border); margin-bottom: 8px;
+}
+.voice-meta { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.voice-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cat-badge   { padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+.cat-cloned  { background: rgba(31,111,235,0.15); color: #388bfd; }
+.cat-premade { background: rgba(107,122,144,0.15); color: var(--muted); }
+.voice-btns  { display: flex; gap: 6px; flex-shrink: 0; }
+.btn-danger  { background: rgba(248,81,73,0.1); color: var(--error); border: 1px solid rgba(248,81,73,0.2); }
+.btn-danger:hover { background: rgba(248,81,73,0.2); }
+.voices-empty { font-size: 13px; color: var(--muted); padding: 10px 0; }
+
+/* ── Clone voice ── */
+.clone-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.clone-tab {
+  padding: 8px 16px; border-radius: 9px; cursor: pointer; font-size: 13px;
+  border: 1.5px solid var(--border); background: var(--surface2); color: var(--muted);
+  transition: all 0.2s; font-family: inherit;
+}
+.clone-tab:hover:not(.active) { border-color: rgba(56,139,253,0.4); color: var(--text); }
+.clone-tab.active { background: rgba(31,111,235,0.12); color: #388bfd; border-color: #1f6feb; }
+.form-input {
+  width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: 9px; color: var(--text); font-size: 14px; padding: 10px 14px;
+  font-family: inherit; transition: border-color 0.2s; margin-bottom: 10px;
+}
+.form-input:focus { outline: none; border-color: #1f6feb; }
+.record-area { text-align: center; padding: 20px 0 10px; }
+.record-btn {
+  width: 72px; height: 72px; border-radius: 50%;
+  border: 2.5px solid #1f6feb; background: rgba(31,111,235,0.1);
+  color: #1f6feb; font-size: 28px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all 0.2s; margin-bottom: 12px;
+}
+.record-btn:hover { background: rgba(31,111,235,0.2); }
+.record-btn.rec {
+  border-color: var(--error); background: rgba(248,81,73,0.12); color: var(--error);
+  animation: p-rec 1.2s ease infinite;
+}
+@keyframes p-rec {
+  0%,100% { box-shadow: 0 0 0 0 rgba(248,81,73,.4); }
+  50%     { box-shadow: 0 0 0 12px rgba(248,81,73,0); }
+}
+.rec-timer  { font-size: 26px; font-weight: 700; font-family: 'JetBrains Mono', monospace; margin-bottom: 6px; }
+.rec-status { font-size: 13px; color: var(--muted); }
+
+/* ── Avatar items ── */
+.avatar-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: 9px;
+  background: var(--surface2); border: 1px solid var(--border); margin-bottom: 8px;
+}
+.av-thumb       { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+.av-placeholder { width: 52px; height: 52px; border-radius: 8px; background: var(--border);
+                  display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.av-info  { flex: 1; min-width: 0; }
+.av-name  { font-size: 14px; font-weight: 500; }
+.av-type  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.av-section-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.8px; color: var(--muted); margin: 16px 0 10px;
+}
+
 /* ── Toast ── */
 .toast {
   position: fixed; bottom: 24px; right: 24px; padding: 12px 18px;
@@ -396,6 +464,73 @@ footer a:hover { color: var(--accent-h); }
         <div class="tgl-desc">Vídeo com avatar digital (consome 1 crédito)</div>
       </div>
       <label class="sw"><input type="checkbox" id="togAv"><span class="sw-track"></span></label>
+    </div>
+  </div>
+
+  <!-- ══ GERENCIAR VOZES ══ -->
+  <div class="card">
+    <div class="card-title" style="justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:7px;"><span class="dot"></span> Gerenciar Vozes</span>
+      <button class="btn btn-ghost btn-sm" onclick="carregarGerenciarVozes()">↻ Atualizar</button>
+    </div>
+    <div id="voicesList"><div class="voices-empty">Clique em Atualizar para carregar vozes.</div></div>
+  </div>
+
+  <!-- ══ CLONAR VOZ ══ -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Clonar Voz
+      <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;font-size:12px;margin-left:6px;">via ElevenLabs</span>
+    </div>
+    <input class="form-input" id="cloneNome" placeholder="Nome da voz (ex: Felipe PT)" maxlength="100">
+    <input class="form-input" id="cloneDesc" placeholder="Descrição (opcional)" maxlength="200">
+    <div class="clone-tabs">
+      <button class="clone-tab active" onclick="setCloneMode('record',this)">🎤 Gravar pelo microfone</button>
+      <button class="clone-tab" onclick="setCloneMode('upload',this)">📁 Upload de arquivo</button>
+    </div>
+    <div id="cloneModeRecord">
+      <div class="record-area">
+        <button class="record-btn" id="recordBtn" onclick="toggleRecord()">🎤</button>
+        <div class="rec-timer" id="recTimer">0:00</div>
+        <div class="rec-status" id="recStatus">Clique para começar a gravar</div>
+      </div>
+      <audio id="recAudio" controls style="display:none;width:100%;margin-top:8px;"></audio>
+    </div>
+    <div id="cloneModeUpload" style="display:none;">
+      <div class="upload-zone" onclick="document.getElementById('cloneAudioFile').click()">
+        <input type="file" id="cloneAudioFile" accept="audio/*,.mp3,.wav,.m4a,.ogg,.flac" onchange="handleAudioFile(this)">
+        <div style="font-size:24px;margin-bottom:8px;">🎵</div>
+        <div style="font-size:14px;">Clique para enviar áudio</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">MP3, WAV, M4A, OGG, FLAC — mín. 30s recomendado</div>
+      </div>
+      <div id="cloneAudioStatus" style="font-size:13px;color:var(--muted);margin-top:8px;"></div>
+    </div>
+    <div style="margin-top:14px;">
+      <button class="btn btn-primary" id="btnClonar" onclick="clonarVoz()" style="width:100%;">
+        ✨ Criar Clone de Voz
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ CRIAR AVATAR HEYGEN ══ -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Criar Avatar HeyGen
+      <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;font-size:12px;margin-left:6px;">Instant Avatar via API</span>
+    </div>
+    <input class="form-input" id="avatarNome" placeholder="Nome do avatar (ex: Felipe Wolff)" maxlength="100">
+    <div class="upload-zone" onclick="document.getElementById('avatarVideoFile').click()" style="margin-bottom:10px;">
+      <input type="file" id="avatarVideoFile" accept="video/mp4,video/quicktime,video/x-msvideo,video/webm" onchange="handleAvatarFile(this)">
+      <div style="font-size:26px;margin-bottom:8px;">🎥</div>
+      <div style="font-size:14px;">Envie um vídeo do seu rosto</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">MP4, MOV — rosto centralizado, boa iluminação, 30-120s</div>
+    </div>
+    <div id="avatarFileStatus" style="font-size:13px;color:var(--muted);margin-bottom:10px;"></div>
+    <button class="btn btn-primary" id="btnCriarAvatar" onclick="criarAvatar()" style="width:100%;margin-bottom:14px;">
+      🤖 Criar Instant Avatar
+    </button>
+    <div id="avatarCriandoStatus"></div>
+    <div id="avataresList"></div>
+    <div style="margin-top:10px;">
+      <button class="btn btn-ghost btn-sm" onclick="carregarAvatares()">↻ Ver meus avatares</button>
     </div>
   </div>
 
@@ -668,6 +803,7 @@ async function renderizar() {
     fundo_tipo:         bgType,
     fundo_path:         bgPath || null,
     usar_avatar:        document.getElementById('togAv').checked,
+    avatar_id:          window._avatarId || null,
     adicionar_legendas: document.getElementById('togLeg').checked,
   };
 
@@ -741,6 +877,229 @@ function toast(msg, tipo = 'info') {
   el.textContent = msg; el.className = `toast show ${tipo}`;
   clearTimeout(toastT);
   toastT = setTimeout(() => el.classList.remove('show'), 3600);
+}
+
+// ══════════════════════════════════════════════════════
+// GERENCIAR VOZES
+// ══════════════════════════════════════════════════════
+async function carregarGerenciarVozes() {
+  const list = document.getElementById('voicesList');
+  list.innerHTML = '<div class="voices-empty">Carregando...</div>';
+  try {
+    const r    = await api('/video/vozes');
+    const data = await r.json();
+    if (!data.vozes || !data.vozes.length) {
+      list.innerHTML = '<div class="voices-empty">Nenhuma voz encontrada.</div>'; return;
+    }
+    list.innerHTML = data.vozes.map(v => `
+      <div class="voice-item">
+        <div class="voice-meta">
+          <span class="voice-name">${v.nome}</span>
+          <span class="cat-badge ${v.categoria === 'cloned' ? 'cat-cloned' : 'cat-premade'}">${v.categoria || 'premade'}</span>
+        </div>
+        <div class="voice-btns">
+          ${v.preview ? `<button class="btn btn-ghost btn-sm" onclick="playPreviewUrl('${v.preview}')">▶ Ouvir</button>` : ''}
+          ${v.categoria === 'cloned' ? `<button class="btn btn-sm btn-danger" onclick="deletarVoz('${v.id}','${v.nome}')">🗑</button>` : ''}
+        </div>
+      </div>`).join('');
+  } catch(e) { list.innerHTML = '<div class="voices-empty" style="color:var(--error);">Erro ao carregar vozes.</div>'; }
+}
+
+function playPreviewUrl(url) {
+  const a = new Audio(url);
+  a.play().catch(e => toast('Não foi possível reproduzir: ' + e.message, 'error'));
+}
+
+async function deletarVoz(voiceId, nome) {
+  if (!confirm(`Deletar a voz "${nome}"? Esta ação é irreversível.`)) return;
+  try {
+    const r    = await fetch(`${BASE}/video/voz/${voiceId}`, { method: 'DELETE' });
+    const data = await r.json();
+    if (data.status === 'ok') {
+      toast(`Voz "${nome}" deletada`, 'success');
+      carregarGerenciarVozes(); loadVoices();
+    } else { toast(data.erro || 'Erro ao deletar', 'error'); }
+  } catch(e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+// ══════════════════════════════════════════════════════
+// CLONAR VOZ
+// ══════════════════════════════════════════════════════
+let cloneMode      = 'record';
+let mediaRecorder  = null;
+let recChunks      = [];
+let recTimerID     = null;
+let recSecs        = 0;
+let recBlob        = null;
+let uploadAudioFile = null;
+
+function setCloneMode(mode, el) {
+  cloneMode = mode;
+  document.querySelectorAll('.clone-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('cloneModeRecord').style.display = mode === 'record' ? 'block' : 'none';
+  document.getElementById('cloneModeUpload').style.display = mode === 'upload' ? 'block' : 'none';
+}
+
+async function toggleRecord() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') { stopRecord(); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recChunks = []; recBlob = null;
+    const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/ogg';
+    mediaRecorder = new MediaRecorder(stream, { mimeType });
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      recBlob = new Blob(recChunks, { type: mimeType });
+      const url = URL.createObjectURL(recBlob);
+      const a = document.getElementById('recAudio');
+      a.src = url; a.style.display = 'block';
+      document.getElementById('recStatus').textContent = '✅ Gravação concluída — ouça antes de clonar';
+      stream.getTracks().forEach(t => t.stop());
+    };
+    mediaRecorder.start();
+    recSecs = 0;
+    document.getElementById('recordBtn').classList.add('rec');
+    document.getElementById('recordBtn').textContent = '⏹';
+    document.getElementById('recStatus').textContent = 'Gravando... clique para parar';
+    recTimerID = setInterval(() => {
+      recSecs++;
+      const m = Math.floor(recSecs / 60), s = recSecs % 60;
+      document.getElementById('recTimer').textContent = `${m}:${String(s).padStart(2,'0')}`;
+    }, 1000);
+  } catch(e) { toast('Erro ao acessar microfone: ' + e.message, 'error'); }
+}
+
+function stopRecord() {
+  if (mediaRecorder) mediaRecorder.stop();
+  clearInterval(recTimerID);
+  document.getElementById('recordBtn').classList.remove('rec');
+  document.getElementById('recordBtn').textContent = '🎤';
+}
+
+function handleAudioFile(input) {
+  if (!input.files[0]) return;
+  uploadAudioFile = input.files[0];
+  document.getElementById('cloneAudioStatus').textContent = '✅ ' + input.files[0].name;
+}
+
+async function clonarVoz() {
+  if (!BASE) { toast('Backend offline', 'error'); return; }
+  const nome = document.getElementById('cloneNome').value.trim();
+  if (!nome) { toast('Digite o nome da voz', 'warn'); return; }
+  let audioData, filename;
+  if (cloneMode === 'record') {
+    if (!recBlob) { toast('Grave um áudio primeiro', 'warn'); return; }
+    audioData = recBlob; filename = 'gravacao.webm';
+  } else {
+    if (!uploadAudioFile) { toast('Selecione um arquivo de áudio', 'warn'); return; }
+    audioData = uploadAudioFile; filename = uploadAudioFile.name;
+  }
+  const btn = document.getElementById('btnClonar');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Clonando...';
+  const fd = new FormData();
+  fd.append('nome', nome);
+  fd.append('descricao', document.getElementById('cloneDesc').value || '');
+  fd.append('audio', audioData, filename);
+  try {
+    const r    = await fetch(`${BASE}/video/voz/clonar`, { method: 'POST', body: fd });
+    const data = await r.json();
+    if (data.status === 'ok') {
+      toast(`Voz "${nome}" clonada! ID: ${data.voice_id}`, 'success');
+      loadVoices(); carregarGerenciarVozes();
+      document.getElementById('cloneNome').value = '';
+      document.getElementById('recTimer').textContent = '0:00';
+      document.getElementById('recStatus').textContent = 'Clique para começar a gravar';
+      document.getElementById('recAudio').style.display = 'none';
+      recBlob = null;
+    } else { toast(data.erro || 'Erro ao clonar voz', 'error'); }
+  } catch(e) { toast('Erro: ' + e.message, 'error'); }
+  btn.disabled = false; btn.innerHTML = '✨ Criar Clone de Voz';
+}
+
+// ══════════════════════════════════════════════════════
+// CRIAR AVATAR HEYGEN
+// ══════════════════════════════════════════════════════
+let uploadAvatarFile = null;
+let avatarPollID     = null;
+
+function handleAvatarFile(input) {
+  if (!input.files[0]) return;
+  uploadAvatarFile = input.files[0];
+  document.getElementById('avatarFileStatus').textContent = '✅ ' + input.files[0].name;
+}
+
+async function criarAvatar() {
+  if (!BASE) { toast('Backend offline', 'error'); return; }
+  const nome = document.getElementById('avatarNome').value.trim();
+  if (!nome)             { toast('Digite o nome do avatar', 'warn'); return; }
+  if (!uploadAvatarFile) { toast('Selecione um vídeo', 'warn'); return; }
+  const btn = document.getElementById('btnCriarAvatar');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Enviando vídeo...';
+  const fd = new FormData();
+  fd.append('nome', nome);
+  fd.append('video', uploadAvatarFile, uploadAvatarFile.name);
+  try {
+    const r    = await fetch(`${BASE}/video/avatar/criar`, { method: 'POST', body: fd });
+    const data = await r.json();
+    const stEl = document.getElementById('avatarCriandoStatus');
+    if (data.status === 'ok' && data.avatar_id) {
+      stEl.innerHTML = `<div style="color:var(--warn);font-size:13px;margin-top:8px;">⏳ Processando... ID: <code>${data.avatar_id}</code></div>`;
+      toast('Avatar enviado para processamento!', 'success');
+      if (avatarPollID) clearInterval(avatarPollID);
+      avatarPollID = setInterval(() => pollAvatar(data.avatar_id, stEl), 5000);
+    } else {
+      stEl.innerHTML = `<div style="color:var(--error);font-size:13px;margin-top:8px;">❌ ${data.erro || 'Erro desconhecido'}</div>`;
+      toast(data.erro || 'Erro ao criar avatar', 'error');
+    }
+  } catch(e) { toast('Erro: ' + e.message, 'error'); }
+  btn.disabled = false; btn.innerHTML = '🤖 Criar Instant Avatar';
+}
+
+async function pollAvatar(avatarId, stEl) {
+  try {
+    const r    = await fetch(`${BASE}/video/avatar/criar/status/${avatarId}`);
+    const data = await r.json();
+    const st   = data.status;
+    if (st === 'completed' || st === 'active' || st === 'ready') {
+      clearInterval(avatarPollID);
+      stEl.innerHTML = `<div style="color:var(--success);font-size:13px;margin-top:8px;">✅ Avatar "${data.nome || avatarId}" pronto!</div>`;
+      toast('Avatar criado com sucesso!', 'success');
+      carregarAvatares();
+    } else if (st === 'failed' || st === 'error') {
+      clearInterval(avatarPollID);
+      stEl.innerHTML = `<div style="color:var(--error);font-size:13px;margin-top:8px;">❌ Falha na criação. Verifique os requisitos do vídeo.</div>`;
+    } else {
+      stEl.innerHTML = `<div style="color:var(--warn);font-size:13px;margin-top:8px;">⏳ Status: ${st || 'processing'}...</div>`;
+    }
+  } catch(e) { console.warn('avatar poll:', e); }
+}
+
+async function carregarAvatares() {
+  const list = document.getElementById('avataresList');
+  try {
+    const r    = await api('/video/avatar/listar');
+    const data = await r.json();
+    if (!data.avatares || !data.avatares.length) { list.innerHTML = ''; return; }
+    list.innerHTML = `<div class="av-section-label">Avatares disponíveis (${data.total})</div>` +
+      data.avatares.map(a => `
+        <div class="avatar-item">
+          ${a.thumbnail
+            ? `<img src="${a.thumbnail}" alt="${a.nome}" class="av-thumb">`
+            : `<div class="av-placeholder">👤</div>`}
+          <div class="av-info">
+            <div class="av-name">${a.nome || 'Sem nome'}</div>
+            <div class="av-type">${a.tipo || 'custom'}</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="usarAvatar('${a.id}','${a.nome}')">✓ Usar</button>
+        </div>`).join('');
+  } catch(e) { list.innerHTML = ''; }
+}
+
+function usarAvatar(id, nome) {
+  window._avatarId = id;
+  document.getElementById('togAv').checked = true;
+  toast(`Avatar "${nome}" selecionado para renderização`, 'success');
 }
 </script>
 </body>
