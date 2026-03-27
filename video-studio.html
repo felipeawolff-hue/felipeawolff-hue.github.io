@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Jarvis Video Studio — Pipeline de criação de vídeos com IA por Felipe Wolff">
+<title>Video Studio — Jarvis by Felipe Wolff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #0a0d12;
+  --surface:  #0f1318;
+  --surface2: #151a22;
+  --border:   #1e2530;
+  --accent:   #1f6feb;
+  --accent-h: #388bfd;
+  --teal:     #00d4aa;
+  --text:     #e2e8f0;
+  --muted:    #6b7a90;
+  --success:  #2ea043;
+  --warn:     #d29922;
+  --error:    #f85149;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; overflow-x: hidden;
+}
+
+/* ── Nav (igual portfólio) ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(10,13,18,0.9); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand {
+  font-size: 15px; font-weight: 700; letter-spacing: -0.3px; color: var(--text);
+  display: flex; align-items: center; gap: 8px; text-decoration: none;
+}
+.nav-brand span { color: var(--teal); }
+.nav-links { display: flex; gap: 20px; align-items: center; }
+.nav-links a {
+  color: var(--muted); font-size: 14px; text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a.active { color: var(--accent-h); }
+.backend-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--muted); margin-left: 6px;
+  display: inline-block; transition: background 0.3s;
+}
+.backend-dot.online  { background: var(--teal); }
+.backend-dot.offline { background: var(--error); }
+
+/* ── Hero ── */
+.hero {
+  padding: 120px 1.5rem 48px;
+  text-align: center; max-width: 700px; margin: 0 auto;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 14px; border-radius: 20px;
+  border: 1px solid rgba(31,111,235,0.3);
+  background: rgba(31,111,235,0.08);
+  color: var(--accent-h); font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  margin-bottom: 20px;
+}
+.hero h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 700; line-height: 1.2; margin-bottom: 14px; }
+.hero h1 em { font-style: normal; color: var(--accent-h); }
+.hero p { color: var(--muted); font-size: 16px; line-height: 1.7; max-width: 540px; margin: 0 auto; }
+
+/* ── Container ── */
+.container { max-width: 840px; margin: 0 auto; padding: 0 16px 100px; }
+
+/* ── Backend status bar ── */
+.status-bar {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 18px; margin-bottom: 24px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+}
+.status-info { font-size: 13px; color: var(--muted); }
+.status-info strong { color: var(--text); }
+.status-pill {
+  padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+}
+.pill-checking { background: rgba(107,122,144,0.15); color: var(--muted); }
+.pill-online   { background: rgba(0,212,170,0.12);   color: var(--teal); }
+.pill-render   { background: rgba(210,153,34,0.12);  color: var(--warn); }
+.pill-offline  { background: rgba(248,81,73,0.12);   color: var(--error); }
+
+/* ── Card ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 24px; margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: #2a3340; }
+.card-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--muted); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 7px;
+}
+.card-title .dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
+}
+
+/* ── Language tabs ── */
+.lang-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.lang-btn {
+  padding: 9px 22px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500;
+  border: 1.5px solid var(--border); background: var(--surface2); color: var(--muted);
+  transition: all 0.2s; font-family: inherit;
+}
+.lang-btn:hover:not(.active) { border-color: rgba(56,139,253,0.4); color: var(--text); }
+.lang-btn.active { background: rgba(31,111,235,0.12); color: var(--accent-h); border-color: var(--accent); }
+
+/* ── Textarea ── */
+.script-area {
+  width: 100%; min-height: 175px;
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: 10px; color: var(--text); font-size: 14px; line-height: 1.7;
+  padding: 14px 16px; resize: vertical; font-family: 'Inter', sans-serif;
+  transition: border-color 0.2s;
+}
+.script-area:focus { outline: none; border-color: var(--accent); }
+.script-meta {
+  display: flex; justify-content: space-between;
+  margin-top: 8px; font-size: 12px; color: var(--muted);
+}
+.script-actions { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: 9px; font-size: 14px; font-weight: 500;
+  cursor: pointer; border: none; transition: all 0.2s; white-space: nowrap;
+  font-family: inherit; text-decoration: none;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-h); }
+.btn-ghost { background: var(--surface2); color: var(--text); border: 1.5px solid var(--border); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent-h); }
+.btn-teal { background: rgba(0,212,170,0.1); color: var(--teal); border: 1.5px solid rgba(0,212,170,0.25); }
+.btn-teal:hover { background: rgba(0,212,170,0.18); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+.btn-sm { padding: 6px 14px; font-size: 13px; }
+
+/* ── Select ── */
+select {
+  flex: 1; background: var(--surface2); border: 1.5px solid var(--border);
+  color: var(--text); padding: 9px 12px; border-radius: 9px; font-size: 14px;
+  cursor: pointer; font-family: inherit;
+}
+select:focus { outline: none; border-color: var(--accent); }
+.voice-row { display: flex; gap: 10px; align-items: center; }
+audio { width: 100%; margin-top: 14px; border-radius: 9px; }
+
+/* ── Background cards ── */
+.bg-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 16px; }
+@media (max-width: 540px) { .bg-grid { grid-template-columns: 1fr 1fr; } }
+.bg-card {
+  border: 2px solid var(--border); border-radius: 12px; padding: 18px 12px;
+  cursor: pointer; text-align: center; background: var(--surface2); transition: all 0.2s;
+}
+.bg-card:hover { border-color: rgba(56,139,253,0.4); }
+.bg-card.active { border-color: var(--accent); background: rgba(31,111,235,0.08); }
+.bg-card.active .label { color: var(--accent-h); }
+.bg-card .icon { font-size: 28px; margin-bottom: 10px; }
+.bg-card .label { font-size: 13px; font-weight: 600; }
+.bg-card .desc { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.bg-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.bg-ok { font-size: 12px; color: var(--teal); }
+
+.upload-zone {
+  border: 2px dashed var(--border); border-radius: 11px;
+  padding: 22px; text-align: center; cursor: pointer; color: var(--muted); transition: all 0.2s;
+}
+.upload-zone:hover { border-color: var(--accent); color: var(--text); }
+.upload-zone input { display: none; }
+
+/* ── Toggles ── */
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
+.tgl-label { font-size: 14px; font-weight: 500; }
+.tgl-desc  { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.tag-badge {
+  font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
+  background: rgba(210,153,34,0.15); color: var(--warn); margin-left: 6px;
+}
+.sw { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+.sw input { display: none; }
+.sw-track {
+  position: absolute; inset: 0; background: #2a3340;
+  border-radius: 12px; cursor: pointer; transition: 0.3s;
+}
+.sw-track:before {
+  content: ""; position: absolute;
+  width: 18px; height: 18px; left: 3px; bottom: 3px;
+  background: #fff; border-radius: 50%; transition: 0.3s;
+  box-shadow: 0 1px 4px rgba(0,0,0,.4);
+}
+.sw input:checked + .sw-track { background: var(--accent); }
+.sw input:checked + .sw-track:before { transform: translateX(20px); }
+
+/* ── Render button ── */
+.btn-render {
+  width: 100%; padding: 17px; font-size: 16px; font-weight: 700; letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #1f6feb, #388bfd);
+  color: #fff; border: none; border-radius: 13px; cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: all 0.25s; box-shadow: 0 2px 18px rgba(31,111,235,0.22);
+}
+.btn-render:hover {
+  transform: translateY(-2px); box-shadow: 0 6px 28px rgba(31,111,235,0.42);
+}
+.btn-render:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ── Progress ── */
+.progress-card, .result-card { display: none; margin-top: 16px; }
+.progress-card.show, .result-card.show { display: block; }
+.prog-head {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+}
+.prog-title { font-size: 14px; font-weight: 600; }
+.badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.b-run  { background: rgba(210,153,34,0.15); color: var(--warn); }
+.b-done { background: rgba(0,212,170,0.12);  color: var(--teal); }
+.b-err  { background: rgba(248,81,73,0.12);  color: var(--error); }
+.prog-track { background: var(--surface2); border-radius: 8px; height: 8px; overflow: hidden; margin-bottom: 10px; }
+.prog-fill  { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-h)); border-radius: 8px; transition: width 0.5s; }
+.prog-msg { font-size: 13px; color: var(--muted); }
+video { width: 100%; border-radius: 11px; background: #000; max-height: 420px; margin-bottom: 14px; }
+.result-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ── Footer ── */
+footer {
+  text-align: center; padding: 40px 16px;
+  border-top: 1px solid var(--border); color: var(--muted); font-size: 13px;
+}
+footer a { color: var(--teal); text-decoration: none; }
+footer a:hover { color: var(--accent-h); }
+
+/* ── Spinner ── */
+.spin {
+  width: 15px; height: 15px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
+  animation: rot .75s linear infinite; flex-shrink: 0;
+}
+@keyframes rot { to { transform: rotate(360deg); } }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; padding: 12px 18px;
+  border-radius: 11px; font-size: 14px; font-weight: 500;
+  z-index: 9999; max-width: 340px; display: none; pointer-events: none;
+  animation: tup .3s ease;
+}
+.toast.show { display: block; }
+.toast.info    { background: #1f6feb; color: #fff; }
+.toast.success { background: #2ea043; color: #fff; }
+.toast.error   { background: #f85149; color: #fff; }
+.toast.warn    { background: #d29922; color: #fff; }
+@keyframes tup { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+@media (max-width: 600px) {
+  .hero { padding: 100px 1rem 36px; }
+  .card { padding: 18px 16px; }
+  .nav-links { gap: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <a href="index.html" class="nav-brand">
+    Felipe<span>Wolff</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Portfolio</a>
+    <a href="video-studio.html" class="active">
+      Video Studio
+      <span class="backend-dot" id="navDot"></span>
+    </a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="hero-badge">⚡ Powered by Jarvis</div>
+  <h1>AI <em>Video Studio</em></h1>
+  <p>Pipeline automatizado: roteiro com IA → voz ElevenLabs → fundo gerado → avatar HeyGen → vídeo pronto.</p>
+</div>
+
+<div class="container">
+
+  <!-- Status do backend -->
+  <div class="status-bar">
+    <div class="status-info">
+      Backend: <strong id="backendLabel">Verificando...</strong>
+    </div>
+    <div class="status-pill pill-checking" id="statusPill">Conectando...</div>
+  </div>
+
+  <!-- Idioma -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Idioma do vídeo</div>
+    <div class="lang-tabs">
+      <button class="lang-btn active" onclick="setLang('en',this)">🇺🇸 English</button>
+      <button class="lang-btn" onclick="setLang('es',this)">🇪🇸 Español</button>
+      <button class="lang-btn" onclick="setLang('pt',this)">🇧🇷 Português</button>
+    </div>
+  </div>
+
+  <!-- Roteiro -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Roteiro</div>
+    <textarea id="roteiro" class="script-area"
+      placeholder="Digite ou cole o roteiro aqui..."
+      oninput="onScript()"></textarea>
+    <div class="script-meta">
+      <span id="metaL">0 chars · 0 palavras</span>
+      <span id="metaD">~0s estimado</span>
+    </div>
+    <div class="script-actions">
+      <button class="btn btn-ghost btn-sm" onclick="loadDefault()">📋 Roteiro padrão</button>
+      <button class="btn btn-primary btn-sm" id="btnAI" onclick="gerarRoteiro()">✨ Gerar com IA</button>
+    </div>
+  </div>
+
+  <!-- Voz -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Voz</div>
+    <div class="voice-row">
+      <select id="vozSel"><option value="">Carregando vozes...</option></select>
+      <button class="btn btn-ghost" id="btnPrev" onclick="previewVoz()">▶ Preview</button>
+    </div>
+    <audio id="audioPlayer" controls style="display:none;"></audio>
+  </div>
+
+  <!-- Fundo -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Fundo</div>
+    <div class="bg-grid">
+      <div class="bg-card active" onclick="selBg('tech_dark',this)">
+        <div class="icon">🌌</div>
+        <div class="label">Tech Dark</div>
+        <div class="desc">Partículas + grid azul</div>
+      </div>
+      <div class="bg-card" onclick="selBg('gradient_blue',this)">
+        <div class="icon">🔵</div>
+        <div class="label">Gradient Blue</div>
+        <div class="desc">Degradê azul suave</div>
+      </div>
+      <div class="bg-card" onclick="selBg('code_scroll',this)">
+        <div class="icon">💻</div>
+        <div class="label">Code Scroll</div>
+        <div class="desc">Código em fundo escuro</div>
+      </div>
+    </div>
+    <div class="bg-row">
+      <button class="btn btn-ghost btn-sm" id="btnBg" onclick="gerarFundo()">⚡ Gerar fundo selecionado</button>
+      <span id="bgSt" class="bg-ok" style="display:none;"></span>
+    </div>
+    <div class="upload-zone" onclick="document.getElementById('upFile').click()">
+      <input type="file" id="upFile" accept="video/*,image/*" onchange="uploadBg(this)">
+      <div style="font-size:26px;margin-bottom:8px;">📁</div>
+      <div style="font-size:14px;">Clique para enviar fundo personalizado</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">MP4, MOV, AVI, JPG, PNG, WEBP</div>
+    </div>
+  </div>
+
+  <!-- Opções -->
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Opções</div>
+    <div class="toggle-row">
+      <div>
+        <div class="tgl-label">Legendas automáticas</div>
+        <div class="tgl-desc">Texto sincronizado na parte inferior do vídeo</div>
+      </div>
+      <label class="sw"><input type="checkbox" id="togLeg"><span class="sw-track"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div>
+        <div class="tgl-label">Avatar HeyGen <span class="tag-badge">CRÉDITOS</span></div>
+        <div class="tgl-desc">Vídeo com avatar digital (consome 1 crédito)</div>
+      </div>
+      <label class="sw"><input type="checkbox" id="togAv"><span class="sw-track"></span></label>
+    </div>
+  </div>
+
+  <!-- Renderizar -->
+  <button class="btn-render" id="btnRender" onclick="renderizar()">
+    🎬 RENDERIZAR VÍDEO
+  </button>
+
+  <!-- Progresso -->
+  <div class="card progress-card" id="progCard">
+    <div class="prog-head">
+      <div class="prog-title" id="progTitle">Iniciando...</div>
+      <div class="badge b-run" id="progBadge">Em andamento</div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="prog-msg" id="progMsg">Aguarde...</div>
+  </div>
+
+  <!-- Resultado -->
+  <div class="card result-card" id="resultCard">
+    <div class="card-title"><span class="dot" style="background:var(--teal)"></span> Vídeo pronto!</div>
+    <video id="videoPlayer" controls></video>
+    <div class="result-actions">
+      <a id="dlVideo" class="btn btn-primary" download>⬇ Download Vídeo</a>
+      <a id="dlAudio" class="btn btn-ghost"   download>🎵 Download Áudio</a>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer>
+  Jarvis Video Studio · by <a href="index.html">Felipe Wolff</a>
+  · Backend: FastAPI + ElevenLabs + HeyGen + MoviePy
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Backend com fallback automático PC → Render ───────────────────────────────
+const BACKENDS = [
+  'https://felipeawolff.dpdns.org',
+  'https://jarvis-backend-547t.onrender.com'
+];
+let BASE = '';   // será preenchido após detecção
+let backendIdx = -1;
+
+async function detectBackend() {
+  const dot  = document.getElementById('navDot');
+  const pill = document.getElementById('statusPill');
+  const lbl  = document.getElementById('backendLabel');
+  pill.className = 'status-pill pill-checking';
+  pill.textContent = 'Conectando...';
+  lbl.textContent = 'Verificando...';
+
+  for (let i = 0; i < BACKENDS.length; i++) {
+    try {
+      const r = await fetch(`${BACKENDS[i]}/health`, { signal: AbortSignal.timeout(4000) });
+      if (r.ok) {
+        BASE = BACKENDS[i];
+        backendIdx = i;
+        const isPC = i === 0;
+        dot.className  = 'backend-dot online';
+        pill.className = isPC ? 'status-pill pill-online' : 'status-pill pill-render';
+        pill.textContent = isPC ? '🟢 PC Online' : '🟡 Render (backup)';
+        lbl.textContent  = BASE;
+        loadVoices();
+        return;
+      }
+    } catch(e) { /* tenta próximo */ }
+  }
+
+  // Offline
+  dot.className = 'backend-dot offline';
+  pill.className = 'status-pill pill-offline';
+  pill.textContent = '🔴 Offline';
+  lbl.textContent = 'Backend indisponível. Ligue o PC ou aguarde o Render acordar.';
+  document.getElementById('btnRender').disabled = true;
+  document.getElementById('btnAI').disabled     = true;
+}
+
+async function api(path, opts = {}) {
+  if (!BASE) throw new Error('Backend não conectado');
+  const url = BASE + path;
+  return fetch(url, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) },
+  });
+}
+
+// ── Roteiros padrão ───────────────────────────────────────────────────────────
+const scripts = {
+  en: `Hi, I'm Felipe Wolff. I build AI-powered automations that work around the clock — so you don't have to.
+
+You know those hours you spend sorting emails, managing files, updating spreadsheets? What if an AI assistant could handle all of that automatically?
+
+That's exactly what I do. I create intelligent systems that connect to your existing tools — Gmail, Google Drive, Slack, Telegram — and automate your entire workflow from end to end.
+
+My flagship project, Jarvis, is a full-stack AI assistant with a three-layer intelligence system, Google Workspace integration, and automatic cloud failover. It runs in production every single day — on my phone, in my browser, and on Telegram.
+
+Ready to stop doing repetitive work? Let's build your digital employee. Visit my portfolio or hire me on Upwork.`,
+
+  es: `Hola, soy Felipe Wolff. Construyo automatizaciones con inteligencia artificial que trabajan las 24 horas — para que tú no tengas que hacerlo.
+
+¿Cuántas horas pasas ordenando correos, administrando archivos, actualizando hojas de cálculo? ¿Y si un asistente de IA pudiera hacer todo eso automáticamente?
+
+Eso es exactamente lo que hago. Creo sistemas inteligentes que se conectan a tus herramientas — Gmail, Google Drive, Slack, Telegram — y automatizan todo tu flujo de trabajo.
+
+Mi proyecto principal, Jarvis, es un asistente de IA full-stack con un sistema de inteligencia de tres capas, integración con Google Workspace y failover automático en la nube.
+
+¿Listo para dejar de hacer trabajo repetitivo? Construyamos tu empleado digital. Visita mi portafolio o contrátame en Upwork.`,
+
+  pt: `Olá, sou Felipe Wolff. Desenvolvo automações com inteligência artificial que trabalham 24 horas — para você não precisar.
+
+Quantas horas você gasta organizando emails, gerenciando arquivos, atualizando planilhas? E se um assistente de IA pudesse fazer tudo isso automaticamente?
+
+É exatamente isso que eu faço. Crio sistemas inteligentes que se conectam às suas ferramentas — Gmail, Google Drive, Slack, Telegram — e automatizam todo o fluxo de trabalho de ponta a ponta.
+
+Meu projeto principal, o Jarvis, é um assistente de IA full-stack com sistema de inteligência em três camadas, integração com Google Workspace e failover automático na nuvem.
+
+Pronto para parar de fazer trabalho repetitivo? Vamos criar o seu funcionário digital. Visite meu portfólio ou me contrate no Upwork.`
+};
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+let lang   = 'en';
+let bgType = 'tech_dark';
+let bgPath = null;
+let pollId = null;
+
+window.addEventListener('DOMContentLoaded', () => {
+  detectBackend();
+  onScript();
+});
+
+function setLang(l, el) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function onScript() {
+  const txt   = document.getElementById('roteiro').value;
+  const chars = txt.length;
+  const words = txt.trim() ? txt.trim().split(/\s+/).length : 0;
+  const dur   = Math.round(words / 2.2);
+  document.getElementById('metaL').textContent = `${chars} chars · ${words} palavras`;
+  document.getElementById('metaD').textContent = `~${dur}s estimado`;
+}
+
+function loadDefault() {
+  document.getElementById('roteiro').value = scripts[lang] || scripts.en;
+  onScript();
+}
+
+// ── Gerar roteiro ─────────────────────────────────────────────────────────────
+async function gerarRoteiro() {
+  const btn = document.getElementById('btnAI');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Gerando...';
+  try {
+    const r    = await api('/video/roteiro', {
+      method: 'POST', body: JSON.stringify({ idioma: lang, duracao_seg: 60 })
+    });
+    const data = await r.json();
+    if (data.status === 'ok' && data.roteiro) {
+      document.getElementById('roteiro').value = data.roteiro;
+      onScript(); toast('Roteiro gerado!', 'success');
+    } else { toast(data.mensagem || 'Erro ao gerar roteiro', 'error'); }
+  } catch(e) { toast('Erro: ' + e.message, 'error'); }
+  btn.disabled = false; btn.innerHTML = '✨ Gerar com IA';
+}
+
+// ── Vozes ─────────────────────────────────────────────────────────────────────
+async function loadVoices() {
+  try {
+    const r    = await api('/video/vozes');
+    const data = await r.json();
+    const sel  = document.getElementById('vozSel');
+    if (data.vozes && data.vozes.length) {
+      sel.innerHTML = data.vozes.map(v =>
+        `<option value="${v.id}">${v.nome}${v.categoria ? ' · ' + v.categoria : ''}</option>`
+      ).join('');
+    } else {
+      sel.innerHTML = '<option value="">Nenhuma voz (configure ELEVENLABS_API_KEY)</option>';
+    }
+  } catch(e) {
+    document.getElementById('vozSel').innerHTML = '<option value="">Erro ao carregar vozes</option>';
+  }
+}
+
+// ── Preview voz ───────────────────────────────────────────────────────────────
+async function previewVoz() {
+  const txt = document.getElementById('roteiro').value.trim();
+  if (!txt) { toast('Digite o roteiro primeiro', 'warn'); return; }
+  const btn = document.getElementById('btnPrev');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div>';
+  try {
+    const r    = await api('/video/voz', {
+      method: 'POST', body: JSON.stringify({
+        texto:  txt.substring(0, 300),
+        voz_id: document.getElementById('vozSel').value || null,
+        idioma: lang
+      })
+    });
+    const data = await r.json();
+    if (data.status === 'ok') {
+      const p = document.getElementById('audioPlayer');
+      p.src = BASE + data.audio_url.replace(/^\/video\/download/, '/video/download');
+      p.style.display = 'block'; p.play();
+      toast('Áudio gerado!', 'success');
+    } else { toast(data.mensagem || 'Erro ao gerar áudio', 'error'); }
+  } catch(e) { toast('Erro: ' + e.message, 'error'); }
+  btn.disabled = false; btn.innerHTML = '▶ Preview';
+}
+
+// ── Fundo ─────────────────────────────────────────────────────────────────────
+function selBg(tipo, el) {
+  bgType = tipo; bgPath = null;
+  document.querySelectorAll('.bg-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const s = document.getElementById('bgSt'); s.style.display = 'none';
+}
+
+async function gerarFundo() {
+  const btn = document.getElementById('btnBg');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Gerando...';
+  try {
+    const r    = await api('/video/fundo', {
+      method: 'POST', body: JSON.stringify({ tipo: bgType, duracao: 200 })
+    });
+    const data = await r.json();
+    if (data.status === 'ok') {
+      bgPath = data.fundo_path;
+      const s = document.getElementById('bgSt');
+      s.textContent = '✅ ' + data.nome; s.style.display = 'inline';
+      toast('Fundo gerado!', 'success');
+    } else { toast(data.mensagem || 'Erro', 'error'); }
+  } catch(e) { toast('Erro: ' + e.message, 'error'); }
+  btn.disabled = false; btn.innerHTML = '⚡ Gerar fundo selecionado';
+}
+
+async function uploadBg(input) {
+  if (!input.files[0]) return;
+  const fd = new FormData(); fd.append('file', input.files[0]);
+  toast('Enviando...', 'info');
+  try {
+    const r    = await fetch(`${BASE}/video/fundo/upload`, { method: 'POST', body: fd });
+    const data = await r.json();
+    if (data.status === 'ok') {
+      bgPath = data.fundo_path;
+      const s = document.getElementById('bgSt');
+      s.textContent = '✅ ' + input.files[0].name; s.style.display = 'inline';
+      toast('Fundo enviado!', 'success');
+    }
+  } catch(e) { toast('Erro ao enviar', 'error'); }
+}
+
+// ── Renderizar ────────────────────────────────────────────────────────────────
+async function renderizar() {
+  const txt = document.getElementById('roteiro').value.trim();
+  if (!txt) { toast('Roteiro vazio', 'warn'); return; }
+  if (!BASE) { toast('Backend offline', 'error'); return; }
+
+  const btn = document.getElementById('btnRender');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Iniciando...';
+  document.getElementById('resultCard').classList.remove('show');
+
+  const payload = {
+    roteiro:            txt,
+    idioma:             lang,
+    voz_id:             document.getElementById('vozSel').value || null,
+    fundo_tipo:         bgType,
+    fundo_path:         bgPath || null,
+    usar_avatar:        document.getElementById('togAv').checked,
+    adicionar_legendas: document.getElementById('togLeg').checked,
+  };
+
+  try {
+    const r    = await api('/video/renderizar', { method: 'POST', body: JSON.stringify(payload) });
+    const data = await r.json();
+    if (data.job_id) {
+      showProg(); startPoll(data.job_id); toast('Pipeline iniciado!', 'success');
+    } else {
+      toast('Erro ao iniciar', 'error');
+      btn.disabled = false; btn.innerHTML = '🎬 RENDERIZAR VÍDEO';
+    }
+  } catch(e) {
+    toast('Erro: ' + e.message, 'error');
+    btn.disabled = false; btn.innerHTML = '🎬 RENDERIZAR VÍDEO';
+  }
+}
+
+function showProg() {
+  const c = document.getElementById('progCard'); c.classList.add('show');
+  document.getElementById('progFill').style.width = '0%';
+  document.getElementById('progBadge').className = 'badge b-run';
+  document.getElementById('progBadge').textContent = 'Em andamento';
+}
+
+function startPoll(jobId) {
+  if (pollId) clearInterval(pollId);
+  pollId = setInterval(() => checkJob(jobId), 2500);
+}
+
+async function checkJob(jobId) {
+  try {
+    const r    = await api(`/video/status/${jobId}`);
+    const data = await r.json();
+    document.getElementById('progFill').style.width  = (data.progresso || 0) + '%';
+    document.getElementById('progTitle').textContent = data.mensagem || 'Processando...';
+    document.getElementById('progMsg').textContent   = `job: ${jobId}`;
+    const badge = document.getElementById('progBadge');
+    if (data.status === 'concluido') {
+      clearInterval(pollId);
+      badge.className = 'badge b-done'; badge.textContent = 'Concluído';
+      document.getElementById('btnRender').disabled = false;
+      document.getElementById('btnRender').innerHTML = '🎬 RENDERIZAR VÍDEO';
+      showResult(data.resultado); toast('Vídeo pronto! 🎉', 'success');
+    } else if (data.status === 'erro') {
+      clearInterval(pollId);
+      badge.className = 'badge b-err'; badge.textContent = 'Erro';
+      document.getElementById('btnRender').disabled = false;
+      document.getElementById('btnRender').innerHTML = '🎬 RENDERIZAR VÍDEO';
+      toast('Erro: ' + data.mensagem, 'error');
+    }
+  } catch(e) { console.warn('poll error', e); }
+}
+
+function showResult(res) {
+  if (!res) return;
+  const card = document.getElementById('resultCard'); card.classList.add('show');
+  if (res.video_url) {
+    const fullUrl = BASE + res.video_url;
+    document.getElementById('videoPlayer').src = fullUrl;
+    document.getElementById('dlVideo').href = fullUrl;
+  }
+  if (res.audio_url) document.getElementById('dlAudio').href = BASE + res.audio_url;
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+let toastT;
+function toast(msg, tipo = 'info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = `toast show ${tipo}`;
+  clearTimeout(toastT);
+  toastT = setTimeout(() => el.classList.remove('show'), 3600);
+}
+</script>
+</body>
+</html>
