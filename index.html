@@ -1069,7 +1069,7 @@
 
         <div class="about-stats">
           <div class="stat-card fade-in fade-in-delay-1">
-            <div class="stat-number">5+</div>
+            <div class="stat-number">4+</div>
             <div class="stat-label" data-i18n="stat_projects">Projects in production</div>
           </div>
           <div class="stat-card fade-in fade-in-delay-2">
@@ -1335,50 +1335,6 @@
         </div>
       </div>
 
-      <!-- Video Studio -->
-      <div class="project-card fade-in">
-        <div class="project-visual mockup-videostudio">
-          <div class="project-mockup">
-            <div class="mockup-icon">🎬</div>
-            <div class="mono" style="color:#c084fc;font-size:0.8rem;">VIDEO STUDIO AI</div>
-            <div class="mockup-lines">
-              <div class="mockup-line" style="background:#c084fc;width:75%;opacity:0.5;"></div>
-              <div class="mockup-line muted"></div>
-              <div class="mockup-line" style="background:#c084fc;width:50%;opacity:0.5;"></div>
-              <div class="mockup-line muted short"></div>
-            </div>
-            <div style="color:var(--muted);font-size:0.65rem;text-align:center;padding:0 1rem;">Script → Voice → Avatar → Subtitles</div>
-          </div>
-        </div>
-        <div class="project-info">
-          <div class="project-header">
-            <h3 class="project-title" data-i18n="p3_title">Video Studio — AI Video Pipeline</h3>
-            <span class="project-status status-working" data-i18n="status_working">Working</span>
-          </div>
-          <p class="project-desc" data-i18n="p3_desc">
-            End-to-end AI video creation pipeline: AI-generated script, cloned voice (OpenVoice v2), lip-synced avatar via Kaggle GPU, multilingual subtitles, and background generation.
-          </p>
-          <ul class="project-features">
-            <li data-i18n="p3_f1">AI scriptwriting via Gemini + voice cloning with OpenVoice v2 (local, free)</li>
-            <li data-i18n="p3_f2">Avatar lip-sync with MuseTalk / Wav2Lip via Kaggle GPU</li>
-            <li data-i18n="p3_f3">Background generation + removal with MoviePy + rembg</li>
-            <li data-i18n="p3_f4">Auto subtitles (multilingual) burned into final video</li>
-          </ul>
-          <div class="project-tech">
-            <span class="tech-tag">Python</span>
-            <span class="tech-tag">MoviePy</span>
-            <span class="tech-tag">OpenVoice v2</span>
-            <span class="tech-tag">FastAPI</span>
-            <span class="tech-tag">Kaggle API</span>
-            <span class="tech-tag">rembg</span>
-          </div>
-          <div class="project-links">
-            <a href="https://github.com/felipeawolff-hue/jarvis-backend" target="_blank" class="project-link">⌥ GitHub</a>
-            <a href="video-studio.html" class="project-link">↗ <span data-i18n="link_live">Live Demo</span></a>
-          </div>
-        </div>
-      </div>
-
       <!-- Cash Flow -->
       <div class="project-card fade-in">
         <div class="project-visual mockup-finance">
@@ -1395,17 +1351,17 @@
         </div>
         <div class="project-info">
           <div class="project-header">
-            <h3 class="project-title" data-i18n="p4_title">Cash Flow Manager</h3>
+            <h3 class="project-title" data-i18n="p3_title">Cash Flow Manager</h3>
             <span class="project-status status-working" data-i18n="status_working">Working</span>
           </div>
-          <p class="project-desc" data-i18n="p4_desc">
+          <p class="project-desc" data-i18n="p3_desc">
             AI-powered personal finance tracker with recurring transactions, Google Sheets sync, and Gemini AI function calling for natural language budget queries.
           </p>
           <ul class="project-features">
-            <li data-i18n="p4_f1">Weekly / biweekly / monthly views with projections</li>
-            <li data-i18n="p4_f2">Checkbox for paid expenses with auto-updated totals</li>
-            <li data-i18n="p4_f3">Color-coded financial health indicators</li>
-            <li data-i18n="p4_f4">Google Sheets sync via Apps Script + AI natural language queries</li>
+            <li data-i18n="p3_f1">Weekly / biweekly / monthly views with projections</li>
+            <li data-i18n="p3_f2">Checkbox for paid expenses with auto-updated totals</li>
+            <li data-i18n="p3_f3">Color-coded financial health indicators</li>
+            <li data-i18n="p3_f4">Google Sheets sync via Apps Script + AI natural language queries</li>
           </ul>
           <div class="project-tech">
             <span class="tech-tag">HTML/JS</span>
@@ -1435,16 +1391,16 @@
         </div>
         <div class="project-info">
           <div class="project-header">
-            <h3 class="project-title" data-i18n="p5_title">NinjaTrader Custom Indicators (C#)</h3>
+            <h3 class="project-title" data-i18n="p4_title">NinjaTrader Custom Indicators (C#)</h3>
             <span class="project-status status-working" data-i18n="status_working">Working</span>
           </div>
-          <p class="project-desc" data-i18n="p5_desc">
+          <p class="project-desc" data-i18n="p4_desc">
             Custom C# indicators for NinjaTrader 8: automated region management via CSV export/import and Low Volume Node detection from Volume Profile data for precise trade entries.
           </p>
           <ul class="project-features">
-            <li data-i18n="p5_f1">ExportYRegions / ImportYRegions — CSV-based region management</li>
-            <li data-i18n="p5_f2">AutoLVN — automatic Low Volume Node detection</li>
-            <li data-i18n="p5_f3">Compatible with ProVolumeProfileTickByTick</li>
+            <li data-i18n="p4_f1">ExportYRegions / ImportYRegions — CSV-based region management</li>
+            <li data-i18n="p4_f2">AutoLVN — automatic Low Volume Node detection</li>
+            <li data-i18n="p4_f3">Compatible with ProVolumeProfileTickByTick</li>
           </ul>
           <div class="project-tech">
             <span class="tech-tag">C#</span>
@@ -1684,25 +1640,18 @@ const i18n = {
     p2_f4: "Instant Telegram notifications + deduplication via hash",
     p2_f5: "History in Supabase — never see the same job twice",
 
-    p3_title: "Video Studio — AI Video Pipeline",
-    p3_desc:  "End-to-end AI video creation pipeline: AI-generated script, cloned voice (OpenVoice v2), lip-synced avatar via Kaggle GPU, multilingual subtitles, and background generation.",
-    p3_f1: "AI scriptwriting via Gemini + voice cloning with OpenVoice v2 (local, free)",
-    p3_f2: "Avatar lip-sync with MuseTalk / Wav2Lip via Kaggle GPU",
-    p3_f3: "Background generation + removal with MoviePy + rembg",
-    p3_f4: "Auto subtitles (multilingual) burned into final video",
+    p3_title: "Cash Flow Manager",
+    p3_desc:  "AI-powered personal finance tracker with recurring transactions, Google Sheets sync, and Gemini AI function calling for natural language budget queries.",
+    p3_f1: "Weekly / biweekly / monthly views with projections",
+    p3_f2: "Checkbox for paid expenses with auto-updated totals",
+    p3_f3: "Color-coded financial health indicators",
+    p3_f4: "Google Sheets sync via Apps Script + AI natural language queries",
 
-    p4_title: "Cash Flow Manager",
-    p4_desc:  "AI-powered personal finance tracker with recurring transactions, Google Sheets sync, and Gemini AI function calling for natural language budget queries.",
-    p4_f1: "Weekly / biweekly / monthly views with projections",
-    p4_f2: "Checkbox for paid expenses with auto-updated totals",
-    p4_f3: "Color-coded financial health indicators",
-    p4_f4: "Google Sheets sync via Apps Script + AI natural language queries",
-
-    p5_title: "NinjaTrader Custom Indicators (C#)",
-    p5_desc:  "Custom C# indicators for NinjaTrader 8: automated region management via CSV export/import and Low Volume Node detection from Volume Profile data for precise trade entries.",
-    p5_f1: "ExportYRegions / ImportYRegions — CSV-based region management",
-    p5_f2: "AutoLVN — automatic Low Volume Node detection",
-    p5_f3: "Compatible with ProVolumeProfileTickByTick",
+    p4_title: "NinjaTrader Custom Indicators (C#)",
+    p4_desc:  "Custom C# indicators for NinjaTrader 8: automated region management via CSV export/import and Low Volume Node detection from Volume Profile data for precise trade entries.",
+    p4_f1: "ExportYRegions / ImportYRegions — CSV-based region management",
+    p4_f2: "AutoLVN — automatic Low Volume Node detection",
+    p4_f3: "Compatible with ProVolumeProfileTickByTick",
 
     status_prod:    "Production",
     status_working: "Working",
@@ -1825,25 +1774,18 @@ const i18n = {
     p2_f4: "Notificaciones Telegram instantáneas + deduplicación via hash",
     p2_f5: "Historial en Supabase — nunca vea el mismo trabajo dos veces",
 
-    p3_title: "Video Studio — Pipeline de Video IA",
-    p3_desc:  "Pipeline de creación de video con IA de extremo a extremo: guion generado por IA, voz clonada (OpenVoice v2), avatar con lip-sync via GPU Kaggle, subtítulos multilingües.",
-    p3_f1: "Guion IA via Gemini + clonación de voz con OpenVoice v2 (local, gratis)",
-    p3_f2: "Lip-sync de avatar con MuseTalk / Wav2Lip via GPU Kaggle",
-    p3_f3: "Generación + eliminación de fondo con MoviePy + rembg",
-    p3_f4: "Subtítulos automáticos (multilingüe) grabados en el video final",
+    p3_title: "Cash Flow Manager",
+    p3_desc:  "Rastreador de finanzas personales con IA, transacciones recurrentes, sincronización con Google Sheets y function calling de Gemini AI para consultas en lenguaje natural.",
+    p3_f1: "Vistas semanales / quincenales / mensuales con proyecciones",
+    p3_f2: "Casillas de verificación para gastos pagados con totales actualizados",
+    p3_f3: "Indicadores de salud financiera codificados por colores",
+    p3_f4: "Sincronización con Google Sheets + consultas IA en lenguaje natural",
 
-    p4_title: "Cash Flow Manager",
-    p4_desc:  "Rastreador de finanzas personales con IA, transacciones recurrentes, sincronización con Google Sheets y function calling de Gemini AI para consultas en lenguaje natural.",
-    p4_f1: "Vistas semanales / quincenales / mensuales con proyecciones",
-    p4_f2: "Casillas de verificación para gastos pagados con totales actualizados",
-    p4_f3: "Indicadores de salud financiera codificados por colores",
-    p4_f4: "Sincronización con Google Sheets + consultas IA en lenguaje natural",
-
-    p5_title: "Indicadores Personalizados NinjaTrader (C#)",
-    p5_desc:  "Indicadores C# para NinjaTrader 8: gestión automatizada de regiones via CSV y detección de Low Volume Nodes desde datos de Volume Profile para entradas precisas.",
-    p5_f1: "ExportYRegions / ImportYRegions — gestión de regiones via CSV",
-    p5_f2: "AutoLVN — detección automática de Low Volume Nodes",
-    p5_f3: "Compatible con ProVolumeProfileTickByTick",
+    p4_title: "Indicadores Personalizados NinjaTrader (C#)",
+    p4_desc:  "Indicadores C# para NinjaTrader 8: gestión automatizada de regiones via CSV y detección de Low Volume Nodes desde datos de Volume Profile para entradas precisas.",
+    p4_f1: "ExportYRegions / ImportYRegions — gestión de regiones via CSV",
+    p4_f2: "AutoLVN — detección automática de Low Volume Nodes",
+    p4_f3: "Compatible con ProVolumeProfileTickByTick",
 
     status_prod:    "Producción",
     status_working: "Funcionando",
@@ -1966,25 +1908,18 @@ const i18n = {
     p2_f4: "Notificações Telegram instantâneas + deduplicação via hash",
     p2_f5: "Histórico no Supabase — nunca veja a mesma vaga duas vezes",
 
-    p3_title: "Video Studio — Pipeline de Vídeo IA",
-    p3_desc:  "Pipeline de criação de vídeo com IA de ponta a ponta: roteiro gerado por IA, voz clonada (OpenVoice v2), avatar com lip-sync via GPU Kaggle, legendas multilíngues.",
-    p3_f1: "Roteiro IA via Gemini + clonagem de voz com OpenVoice v2 (local, grátis)",
-    p3_f2: "Lip-sync de avatar com MuseTalk / Wav2Lip via GPU Kaggle",
-    p3_f3: "Geração + remoção de fundo com MoviePy + rembg",
-    p3_f4: "Legendas automáticas (multilíngue) gravadas no vídeo final",
+    p3_title: "Cash Flow Manager",
+    p3_desc:  "Rastreador de finanças pessoais com IA, transações recorrentes, sincronização com Google Sheets e function calling do Gemini AI para consultas em linguagem natural.",
+    p3_f1: "Visualizações semanal / quinzenal / mensal com projeções",
+    p3_f2: "Checkbox para despesas pagas com totais atualizados",
+    p3_f3: "Indicadores de saúde financeira com código de cores",
+    p3_f4: "Sincronização com Google Sheets + consultas IA em linguagem natural",
 
-    p4_title: "Cash Flow Manager",
-    p4_desc:  "Rastreador de finanças pessoais com IA, transações recorrentes, sincronização com Google Sheets e function calling do Gemini AI para consultas em linguagem natural.",
-    p4_f1: "Visualizações semanal / quinzenal / mensal com projeções",
-    p4_f2: "Checkbox para despesas pagas com totais atualizados",
-    p4_f3: "Indicadores de saúde financeira com código de cores",
-    p4_f4: "Sincronização com Google Sheets + consultas IA em linguagem natural",
-
-    p5_title: "Indicadores Customizados NinjaTrader (C#)",
-    p5_desc:  "Indicadores C# para NinjaTrader 8: gerenciamento automatizado de regiões via CSV e detecção de Low Volume Nodes a partir de dados do Volume Profile para entradas precisas.",
-    p5_f1: "ExportYRegions / ImportYRegions — gerenciamento de regiões via CSV",
-    p5_f2: "AutoLVN — detecção automática de Low Volume Nodes",
-    p5_f3: "Compatível com ProVolumeProfileTickByTick",
+    p4_title: "Indicadores Customizados NinjaTrader (C#)",
+    p4_desc:  "Indicadores C# para NinjaTrader 8: gerenciamento automatizado de regiões via CSV e detecção de Low Volume Nodes a partir de dados do Volume Profile para entradas precisas.",
+    p4_f1: "ExportYRegions / ImportYRegions — gerenciamento de regiões via CSV",
+    p4_f2: "AutoLVN — detecção automática de Low Volume Nodes",
+    p4_f3: "Compatível com ProVolumeProfileTickByTick",
 
     status_prod:    "Produção",
     status_working: "Funcionando",
