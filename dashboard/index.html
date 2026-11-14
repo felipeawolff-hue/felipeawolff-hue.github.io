@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Projetos</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --bg-card: #1a1d27;
+  --bg-hover: #222636;
+  --bg-branch: #14161e;
+  --border: #2a2e3d;
+  --text: #e8eaf0;
+  --text-dim: #8b90a0;
+  --text-muted: #5a5f72;
+  --accent: #6c8cff;
+  --accent-dim: rgba(108,140,255,.12);
+  --green: #4ade80;
+  --green-dim: rgba(74,222,128,.12);
+  --yellow: #fbbf24;
+  --yellow-dim: rgba(251,191,36,.12);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,.12);
+  --purple: #a78bfa;
+  --purple-dim: rgba(167,139,250,.12);
+  --orange: #fb923c;
+  --orange-dim: rgba(251,146,60,.12);
+  --cyan: #22d3ee;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f5f6fa; --bg-card: #ffffff; --bg-hover: #f0f1f5;
+    --bg-branch: #f8f9fc; --border: #e2e4ea; --text: #1a1d27;
+    --text-dim: #5a5f72; --text-muted: #8b90a0;
+    --accent: #4a6cf7; --accent-dim: rgba(74,108,247,.08);
+    --green-dim: rgba(34,197,94,.08); --yellow-dim: rgba(234,179,8,.08);
+    --red-dim: rgba(239,68,68,.08); --purple-dim: rgba(139,92,246,.08);
+    --orange-dim: rgba(234,88,12,.08);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1117; --bg-card: #1a1d27; --bg-hover: #222636;
+  --bg-branch: #14161e; --border: #2a2e3d; --text: #e8eaf0;
+  --text-dim: #8b90a0; --text-muted: #5a5f72;
+  --accent: #6c8cff; --accent-dim: rgba(108,140,255,.12);
+  --green-dim: rgba(74,222,128,.12); --yellow-dim: rgba(251,191,36,.12);
+  --red-dim: rgba(248,113,113,.12); --purple-dim: rgba(167,139,250,.12);
+  --orange-dim: rgba(251,146,60,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+#app{max-width:900px;margin:0 auto;padding:24px 16px 80px}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.header h1{font-family:var(--font-display);font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .sync-info{font-size:.75rem;color:var(--text-muted);font-family:var(--font-mono)}
+.subtitle{font-size:.85rem;color:var(--text-dim);margin-bottom:20px}
+.governance{background:var(--yellow-dim);border:1px solid rgba(251,191,36,.2);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:24px;font-size:.8rem;color:var(--yellow);display:flex;align-items:flex-start;gap:8px}
+.governance .icon{font-size:1rem;flex-shrink:0}
+.pilar-section{margin-bottom:28px}
+.pilar-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.pilar-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:.8rem;background:var(--accent-dim);color:var(--accent)}
+.pilar-name{font-family:var(--font-display);font-weight:600;font-size:1.05rem;flex:1}
+.priority-tag{font-size:.65rem;font-weight:600;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
+.priority-tag.p1{background:var(--green-dim);color:var(--green)}
+.priority-tag.p2{background:var(--yellow-dim);color:var(--yellow)}
+.priority-tag.p3{background:var(--purple-dim);color:var(--purple)}
+.project-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:background .15s,border-color .15s,transform .1s}
+.project-card:hover{background:var(--bg-hover);border-color:var(--accent);transform:translateY(-1px)}
+.project-card .row{display:flex;align-items:center;gap:10px}
+.project-card .name{font-family:var(--font-display);font-weight:600;font-size:.95rem;flex:1}
+.project-card .status-badge{font-size:.7rem;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap}
+.project-card .desc{font-size:.78rem;color:var(--text-dim);margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.project-card .progress-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.progress-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width .4s ease}
+.progress-pct{font-size:.7rem;font-family:var(--font-mono);color:var(--text-muted);min-width:32px;text-align:right}
+.sub-indicator{font-size:.7rem;color:var(--text-muted);margin-left:12px}
+.status-concluido{background:var(--green-dim);color:var(--green)}
+.status-funcional,.status-operacional,.status-estavel{background:var(--accent-dim);color:var(--accent)}
+.status-andamento,.status-refinamento,.status-teste,.status-ativo{background:var(--yellow-dim);color:var(--yellow)}
+.status-planejado,.status-arquitetado,.status-estruturado{background:var(--purple-dim);color:var(--purple)}
+.status-pausado{background:var(--orange-dim);color:var(--orange)}
+.status-cancelado{background:var(--red-dim);color:var(--red)}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--accent);cursor:pointer;margin-bottom:16px;background:none;border:none;font-family:var(--font-body);padding:4px 0}
+.back-btn:hover{text-decoration:underline}
+.detail-header{margin-bottom:20px}
+.detail-header h2{font-family:var(--font-display);font-size:1.4rem;font-weight:700;margin-bottom:4px}
+.detail-header .detail-desc{font-size:.85rem;color:var(--text-dim)}
+.detail-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.meta-chip{font-size:.72rem;padding:4px 10px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim)}
+.meta-chip strong{color:var(--text)}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:16px}
+.stat-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center}
+.stat-box .val{font-family:var(--font-display);font-size:1.5rem;font-weight:700}
+.stat-box .label{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.filter-bar{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.filter-btn{font-size:.75rem;padding:5px 12px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font-body);transition:all .15s}
+.filter-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.filter-btn:hover:not(.active){border-color:var(--text-muted)}
+.branch{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
+.branch-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;transition:background .15s}
+.branch-header:hover{background:var(--bg-hover)}
+.branch-icon{font-size:1.1rem}
+.branch-name{font-family:var(--font-display);font-weight:600;font-size:.9rem;flex:1}
+.branch-count{font-size:.7rem;font-family:var(--font-mono);color:var(--text-muted)}
+.branch-chevron{font-size:.8rem;color:var(--text-muted);transition:transform .2s}
+.branch.open .branch-chevron{transform:rotate(90deg)}
+.branch-tasks{display:none;padding:0 14px 10px}
+.branch.open .branch-tasks{display:block}
+.task-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-top:1px solid var(--border)}
+.task-item:first-child{border-top:none}
+.task-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--border);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:.7rem}
+.task-check.done{background:var(--green);border-color:var(--green);color:#000}
+.task-check.paused{background:var(--orange);border-color:var(--orange);color:#000}
+.task-check.canceled{background:var(--red);border-color:var(--red);color:#000}
+.task-title{font-size:.82rem;flex:1}
+.task-title.done{color:var(--text-muted);text-decoration:line-through}
+.task-title.paused{color:var(--orange)}
+.task-title.canceled{color:var(--text-muted);text-decoration:line-through}
+.task-note{font-size:.72rem;color:var(--text-muted);margin-top:2px;font-style:italic}
+.sub-projects{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-top:8px}
+.loading{text-align:center;padding:60px 20px;color:var(--text-muted)}
+.loading .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error-box{background:var(--red-dim);border:1px solid rgba(248,113,113,.2);border-radius:var(--radius-sm);padding:16px;text-align:center;color:var(--red);font-size:.85rem}
+.no-tasks{text-align:center;padding:30px 16px;color:var(--text-muted);font-size:.85rem}
+.no-tasks code{font-family:var(--font-mono);background:var(--bg-card);padding:2px 6px;border-radius:4px;font-size:.75rem}
+@media(max-width:480px){.header h1{font-size:1.3rem}.stats-bar{grid-template-columns:repeat(2,1fr)}.sub-projects{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="loading"><div class="spinner"></div>Carregando dados...</div>
+</div>
+<script>
+const SUPABASE_URL='https://fpuerkceromijuqcawgo.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZwdWVya2Nlcm9taWp1cWNhd2dvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NDY4MjksImV4cCI6MjA4ODMyMjgyOX0.EAPGWykxWjxEbq3L6ba1KG-q3dTD_ikKyrDmFQTJ5B0';
+const API=`${SUPABASE_URL}/rest/v1`;
+const H={'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`};
+
+// Dados embutidos (snapshot) — usados quando fetch falha (ex: sandbox de artefato)
+const EMBEDDED_DATA={
+  pilars:[{id:1,number:1,name:"Core Infrastructure",priority:"P2",sort_order:1},{id:2,number:2,name:"Frente Comercial & Faturamento",priority:"P1",sort_order:2},{id:3,number:3,name:"Projetos Sociais & Institucionais",priority:"P3",sort_order:3},{id:4,number:4,name:"Capacitação Profissional",priority:"P3",sort_order:4},{id:5,number:5,name:"Espaço de Criação & Refúgio Cognitivo",priority:"P3",sort_order:5},{id:6,number:6,name:"Prospecção & Recursos Auxiliares",priority:"P2",sort_order:6}],
+  projects:[{id:1,pilar_id:1,parent_id:null,name:"Jarvis v5.0",status:"Pausado / Em Configuração",description:"AI Harness OS — Sistema Operacional de IA, CPU de Raciocínio, orquestração e memória multinível",progress:30,details:{meta:"Instância Oracle Cloud A1 + Docker Stack",gargalo:"Escassez de capacidade A1 na Oracle; log de 1,53 GB",acao:"Manter script oci_a1_grabber.py rodando; truncar error.log"},sort_order:1},{id:2,pilar_id:2,parent_id:null,name:"Taci Finanças",status:"Em andamento",description:"Motor de geração de receita, automação de vendas e produtos de trading",progress:45,details:{},sort_order:1},{id:3,pilar_id:2,parent_id:2,name:"Graph API + IA",status:"Arquitetado",description:"Motor de Conversão Oficial — assistente de vendas 24/7 integrado ao Instagram via Graph API da Meta",progress:20,details:{meta:"Atendimento automatizado Meta",gargalo:"Depende da liberação do jarvis-server na nuvem",acao:"Finalizar rotas do FastAPI no ambiente local para teste"},sort_order:1},{id:4,pilar_id:2,parent_id:2,name:"InstaFlow",status:"Em Teste / Ajuste",description:"Automação de Instagram em Kotlin — crescimento orgânico e prospecção de leads",progress:40,details:{meta:"Automação de crescimento Instagram",gargalo:"Rate limit agressivo da API do Instagram; bloqueio de IP",acao:"Ajustar delays de simulação no app Kotlin"},sort_order:2},{id:5,pilar_id:2,parent_id:2,name:"AutoLVN v8",status:"Em Refinamento Final",description:"Indicador de Order Flow para NinjaTrader 8 — produto comercializável para traders",progress:80,details:{meta:"Produto comercializável para NinjaTrader",gargalo:"Validação final de paredes de volume em dados reais",acao:"Concluir testes da v8 e preparar material de demonstração"},sort_order:3},{id:6,pilar_id:2,parent_id:2,name:"CashFlow 2.0",status:"Funcional",description:"Aplicação web para controle financeiro pessoal integrada ao Blogger + Supabase + Google Sheets",progress:70,details:{meta:"Sistema de controle financeiro pessoal",gargalo:"Sincronização e tratamento de exceções na API Gemini",acao:"Manter em uso pessoal e refinar prompts de Function Calling"},sort_order:4},{id:7,pilar_id:2,parent_id:2,name:"Ebooks",status:"Em andamento",description:"Infoprodutos educacionais R$97 — Kiwify (vendas diretas) e Hotmart (afiliados)",progress:50,details:{},sort_order:5},{id:8,pilar_id:2,parent_id:2,name:"Tráfego Orgânico",status:"Operacional",description:"Discovery Bot — 194 grupos mapeados, 50 validados. Prospecção em WhatsApp e Telegram",progress:60,details:{grupos_mapeados:194,grupos_validados:50},sort_order:6},{id:9,pilar_id:3,parent_id:null,name:"THApp",status:"Estável / 252 Usuários",description:"Ecossistema Mobile Gamificado — Estaca Cumbica (~2.700 membros)",progress:65,details:{meta:"Automação da História da Família na Estaca",gargalo:"Expiração de ordenanças e fluxo de aprovação de PDFs",acao:"Implementar agente tutor Elias e otimizar rotinas do n8n",usuarios:252,telas:22,oficinas:8},sort_order:1},{id:10,pilar_id:4,parent_id:null,name:"Massoterapia",status:"Planejado / Estruturado",description:"Formação técnico-clínica em terapias manuais — 6 módulos progressivos",progress:10,details:{meta:"Formação técnica e clínica",gargalo:"Conciliação de tempo de estudo teórico e prática manual",acao:"Iniciar cronograma pelo Módulo 1 (Anatomofisiologia)",modulos:6},sort_order:1},{id:11,pilar_id:5,parent_id:null,name:"Caixa de Areia",status:"Ativo",description:"Sandbox criativa — produção musical e despressurização cognitiva",progress:50,details:{},sort_order:1},{id:12,pilar_id:5,parent_id:11,name:"Child of the Pull",status:"Ativo",description:"Composição musical autoral e experimentação sonora",progress:30,details:{},sort_order:1},{id:13,pilar_id:5,parent_id:11,name:"BOM Romaji",status:"Concluído",description:"Livro de Mórmon em Romaji — PDF 630 páginas, 15 livros, 239 capítulos",progress:100,details:{},sort_order:2},{id:14,pilar_id:6,parent_id:null,name:"Job Hunter",status:"Funcional Parcial",description:"Sistema automatizado de prospecção freelance — 7 plataformas, $25-35/h",progress:55,details:{meta:"Captação de contratos freelance",gargalo:"Bloqueios anti-bot (Cloudflare/recaptcha) nos portais",acao:"Manter monitoramento no Freelancer.com e Upwork"},sort_order:1},{id:15,pilar_id:6,parent_id:null,name:"Visualizador 360°",status:"Concluído (100%)",description:"Tours Virtuais 360° para imobiliárias — Pannellum, HTML5",progress:100,details:{meta:"Ativo comercial pronto para demonstração",acao:"Disponibilizar demonstração no portfólio web"},sort_order:2},{id:16,pilar_id:6,parent_id:null,name:"Pipeline TeraBox",status:"Em andamento",description:"Migração de backup — 76,41 GB consolidados",progress:60,details:{volume:"76,41 GB"},sort_order:3}],
+  tasks:[]
+};
+
+let S={pilars:[],projects:[],tasks:[],view:'overview',sel:null,filter:'all',live:false};
+
+async function fetchJSON(ep){const r=await fetch(`${API}${ep}`,{headers:H});if(!r.ok)throw new Error(`${r.status}`);return r.json()}
+
+async function loadData(){
+  try{
+    const[p,pr,t]=await Promise.all([
+      fetchJSON('/pilars?order=sort_order'),
+      fetchJSON('/projects?order=sort_order'),
+      fetchJSON('/tasks?order=sort_order'),
+    ]);
+    S.pilars=p;S.projects=pr;S.tasks=t||[];S.live=true;render();
+  }catch(e){
+    // Fallback: usar dados embutidos
+    S.pilars=EMBEDDED_DATA.pilars;S.projects=EMBEDDED_DATA.projects;S.tasks=EMBEDDED_DATA.tasks||[];S.live=false;render();
+  }
+}
+
+function esc(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):''}
+function statusClass(s){
+  const l=(s||'').toLowerCase();
+  if(l.includes('concluído')||l.includes('100%'))return'status-concluido';
+  if(l.includes('funcional'))return'status-funcional';
+  if(l.includes('operacional')||l.includes('estável'))return'status-estavel';
+  if(l.includes('andamento')||l.includes('refinamento')||l.includes('teste')||l.includes('ativo'))return'status-andamento';
+  if(l.includes('planejado')||l.includes('arquitetado')||l.includes('estruturado'))return'status-planejado';
+  if(l.includes('pausado'))return'status-pausado';
+  if(l.includes('cancelado'))return'status-cancelado';
+  return'status-andamento';
+}
+function pColor(p){if(p>=80)return'var(--green)';if(p>=50)return'var(--accent)';if(p>=25)return'var(--yellow)';return'var(--orange)'}
+function byPilar(pid){return S.projects.filter(p=>p.pilar_id===pid&&!p.parent_id)}
+function subs(pid){return S.projects.filter(p=>p.parent_id===pid)}
+function tasksOf(pid){return S.tasks.filter(t=>t.project_id===pid)}
+
+function renderOverview(){
+  const now=new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
+  const mode=S.live?'live · Supabase':'snapshot embutido';
+  let h=`<div class="header"><h1>Panorama de Projetos</h1><span class="sync-info">${mode} · ${now}</span></div>
+  <div class="subtitle">Ecossistema completo — ${S.live?'dados em tempo real do Supabase':'dados embutidos (deploy no GitHub Pages para live)'}</div>
+  <div class="governance"><span class="icon">⚠</span><span><strong>Regra de Governança:</strong> Jarvis v5.0 e expansões de infra pesada pausados até Taci Finanças gerar faturamento consistente.</span></div>`;
+
+  for(const pi of S.pilars){
+    const mains=byPilar(pi.id);
+    h+=`<div class="pilar-section"><div class="pilar-header">
+      <div class="pilar-num">${pi.number}</div>
+      <div class="pilar-name">${esc(pi.name)}</div>
+      <span class="priority-tag ${(pi.priority||'').toLowerCase()}">${pi.priority||''}</span>
+    </div>`;
+    for(const pr of mains){
+      const ss=subs(pr.id);
+      h+=cardHTML(pr,ss);
+    }
+    h+=`</div>`;
+  }
+  return h;
+}
+
+function cardHTML(pr,ss){
+  const sc=statusClass(pr.status),pc=pColor(pr.progress||0);
+  const si=ss.length>0?`<span class="sub-indicator">▸ ${ss.length} sub-projeto${ss.length>1?'s':''}</span>`:'';
+  const desc=pr.description&&pr.description!==pr.name?`<div class="desc">${esc(pr.description)}</div>`:'';
+  let c=`<div class="project-card" onclick="openProject(${pr.id})">
+    <div class="row"><span class="name">${esc(pr.name)}</span><span class="status-badge ${sc}">${esc(pr.status)}</span></div>
+    ${desc}
+    <div class="progress-row"><div class="progress-bar"><div class="progress-fill" style="width:${pr.progress||0}%;background:${pc}"></div></div><span class="progress-pct">${pr.progress||0}%</span>${si}</div>
+  </div>`;
+  if(ss.length>0){
+    c+=`<div class="sub-projects">`;
+    for(const s of ss){
+      const sc2=statusClass(s.status),pc2=pColor(s.progress||0);
+      c+=`<div class="project-card" onclick="event.stopPropagation();openProject(${s.id})" style="margin-bottom:0">
+        <div class="row"><span class="name" style="font-size:.85rem">${esc(s.name)}</span><span class="status-badge ${sc2}" style="font-size:.65rem">${esc(s.status)}</span></div>
+        <div class="progress-row"><div class="progress-bar"><div class="progress-fill" style="width:${s.progress||0}%;background:${pc2}"></div></div><span class="progress-pct">${s.progress||0}%</span></div>
+      </div>`;
+    }
+    c+=`</div>`;
+  }
+  return c;
+}
+
+function renderDetail(){
+  const pr=S.projects.find(p=>p.id===S.sel);
+  if(!pr)return'<div class="error-box">Projeto não encontrado.</div>';
+  const ts=tasksOf(pr.id);const ss=subs(pr.id);
+  let allT=[...ts];for(const s of ss)allT=allT.concat(tasksOf(s.id));
+
+  const total=allT.length,done=allT.filter(t=>t.status==='done').length;
+  const todo=allT.filter(t=>t.status==='todo').length,paused=allT.filter(t=>t.status==='paused').length;
+  const pct=total>0?Math.round(done/total*100):(pr.progress||0);
+
+  const det=pr.details||{};
+  let mc='';
+  if(det.meta)mc+=`<span class="meta-chip">🎯 <strong>Meta:</strong> ${esc(det.meta)}</span>`;
+  if(det.gargalo)mc+=`<span class="meta-chip">⚠ <strong>Gargalo:</strong> ${esc(det.gargalo)}</span>`;
+  if(det.acao)mc+=`<span class="meta-chip">▸ <strong>Ação:</strong> ${esc(det.acao)}</span>`;
+
+  let h=`<button class="back-btn" onclick="goBack()">← Voltar ao panorama</button>
+  <div class="detail-header">
+    <div class="row" style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <h2>${esc(pr.name)}</h2>
+      <span class="status-badge ${statusClass(pr.status)}">${esc(pr.status)}</span>
+    </div>
+    ${pr.description?`<div class="detail-desc">${esc(pr.description)}</div>`:''}
+    ${mc?`<div class="detail-meta">${mc}</div>`:''}
+  </div>`;
+
+  if(total>0){
+    h+=`<div class="stats-bar">
+      <div class="stat-box"><div class="val">${total}</div><div class="label">Total</div></div>
+      <div class="stat-box"><div class="val" style="color:var(--green)">${done}</div><div class="label">Feitas</div></div>
+      <div class="stat-box"><div class="val" style="color:var(--accent)">${todo}</div><div class="label">A Fazer</div></div>
+      <div class="stat-box"><div class="val" style="color:var(--accent)">${pct}%</div><div class="label">Progresso</div></div>
+    </div>`;
+
+    h+=`<div class="filter-bar">
+      <button class="filter-btn ${S.filter==='all'?'active':''}" onclick="setFilter('all')">Todas (${total})</button>
+      <button class="filter-btn ${S.filter==='todo'?'active':''}" onclick="setFilter('todo')">A Fazer (${todo})</button>
+      <button class="filter-btn ${S.filter==='done'?'active':''}" onclick="setFilter('done')">Feitas (${done})</button>
+      ${paused>0?`<button class="filter-btn ${S.filter==='paused'?'active':''}" onclick="setFilter('paused')">Pausadas (${paused})</button>`:''}
+    </div>`;
+
+    const filtered=S.filter==='all'?allT:allT.filter(t=>t.status===S.filter);
+    const branches={};
+    for(const t of filtered){const br=t.branch||'Geral';if(!branches[br])branches[br]=[];branches[br].push(t)}
+
+    const icons=['📋','🔧','💻','📊','🎯','🚀','📦','🔬','📝','⚙️'];
+    const colors=['var(--accent)','var(--green)','var(--purple)','var(--orange)','var(--cyan)','var(--yellow)'];
+    let bi=0;
+    for(const[bn,bt]of Object.entries(branches)){
+      const bd=bt.filter(t=>t.status==='done').length;
+      h+=`<div class="branch open" id="branch-${bi}">
+        <div class="branch-header" onclick="toggleBranch(${bi})">
+          <span class="branch-icon">${icons[bi%icons.length]}</span>
+          <span class="branch-name" style="color:${colors[bi%colors.length]}">${esc(bn)}</span>
+          <span class="branch-count">${bd}/${bt.length}</span>
+          <span class="branch-chevron">▸</span>
+        </div><div class="branch-tasks">`;
+      for(const t of bt){
+        const cc=t.status==='done'?'done':t.status==='paused'?'paused':t.status==='canceled'?'canceled':'';
+        const ci=t.status==='done'?'✓':t.status==='paused'?'⏸':t.status==='canceled'?'✗':'';
+        h+=`<div class="task-item">
+          <div class="task-check ${cc}">${ci}</div>
+          <div style="flex:1">
+            <div class="task-title ${t.status}">${esc(t.title)}</div>
+            ${t.note?`<div class="task-note">${esc(t.note)}</div>`:''}
+          </div>
+        </div>`;
+      }
+      h+=`</div></div>`;bi++;
+    }
+  } else {
+    h+=`<div class="no-tasks">Nenhuma tarefa cadastrada para este projeto.<br><small>Crie um companion MD (ex: <code>${pr.name.toLowerCase().replace(/\s+/g,'-')}.md</code>) com checkboxes para popular.</small></div>`;
+    if(ss.length>0){
+      h+=`<h3 style="font-family:var(--font-display);margin:20px 0 10px;font-size:1rem">Sub-projetos</h3><div class="sub-projects">`;
+      for(const s of ss){
+        const sc2=statusClass(s.status),pc2=pColor(s.progress||0),sd=s.details||{};
+        h+=`<div class="project-card" onclick="openProject(${s.id})" style="margin-bottom:0">
+          <div class="row"><span class="name" style="font-size:.85rem">${esc(s.name)}</span><span class="status-badge ${sc2}" style="font-size:.65rem">${esc(s.status)}</span></div>
+          ${s.description?`<div class="desc">${esc(s.description)}</div>`:''}
+          <div class="progress-row"><div class="progress-bar"><div class="progress-fill" style="width:${s.progress||0}%;background:${pc2}"></div></div><span class="progress-pct">${s.progress||0}%</span></div>
+          ${sd.meta?`<div style="font-size:.72rem;color:var(--text-muted);margin-top:6px">🎯 ${esc(sd.meta)}</div>`:''}
+        </div>`;
+      }
+      h+=`</div>`;
+    }
+  }
+  return h;
+}
+
+function openProject(id){S.sel=id;S.view='detail';S.filter='all';render();scrollTo(0,0)}
+function goBack(){S.view='overview';S.sel=null;render()}
+function setFilter(f){S.filter=f;render()}
+function toggleBranch(i){const e=document.getElementById('branch-'+i);if(e)e.classList.toggle('open')}
+function render(){document.getElementById('app').innerHTML=S.view==='detail'?renderDetail():renderOverview()}
+
+loadData();
+</script>
+</body>
+</html>
