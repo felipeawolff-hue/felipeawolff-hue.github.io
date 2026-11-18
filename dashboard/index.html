@@ -24,6 +24,10 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 
 /* BOARD */
 .board{display:flex;gap:0;padding:16px 16px;overflow-x:auto;scroll-snap-type:x mandatory;min-height:calc(100vh - 52px);align-items:flex-start}
+.board.grid-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px;overflow-x:visible;scroll-snap-type:none}
+.board.grid-layout .lane-gap{display:none}
+.board.grid-layout .lane{flex:none!important;width:100%!important;max-height:none}
+.board.grid-layout .lane-resize{display:none}
 .lane{flex:0 0 320px;scroll-snap-align:start;background:var(--bg-lane);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;max-height:calc(100vh - 80px);position:relative;transition:border-color .15s;min-width:200px}
 .lane.drag-over-lane{border-color:var(--accent);box-shadow:0 0 0 2px rgba(88,166,255,.25)}
 .lane.drag-over{background:var(--drag-over);border-color:var(--accent)}
@@ -42,7 +46,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .lane-gap{flex:0 0 12px;min-width:12px}
 
 /* CARDS */
-.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;position:relative;overflow:hidden}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;position:relative;overflow:hidden;min-height:40px}
 .card:hover{border-color:var(--accent);box-shadow:var(--shadow);transform:translateY(-1px)}
 .card.dragging{opacity:.35;transform:scale(.95)}
 .card[draggable]{cursor:grab}
@@ -72,7 +76,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .pb{height:100%;border-radius:2px;transition:width .3s}
 
 /* SECTION CARDS */
-.sc{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px}
+.sc{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;min-height:40px;position:relative}
 .sc h4{font-size:.8rem;font-weight:600;margin-bottom:5px}
 .sc ul{list-style:none;padding:0}
 .sc li{font-size:.75rem;color:var(--text-dim);padding:2px 0;border-bottom:1px solid var(--border)}
@@ -125,6 +129,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
   <h1>Dashboard</h1>
   <div class="hdr-r">
     <span style="font-size:.72rem;color:var(--text-muted)">snapshot 18/nov</span>
+    <button class="tbtn" onclick="toggleLayout()" title="Empilhar / lado a lado">▦</button>
     <button class="tbtn" onclick="toggleTheme()">◐</button>
   </div>
 </div>
@@ -466,17 +471,19 @@ function cardHTML(p){
     </div>
     <div class="pw"><div class="pb" style="width:${p.progress}%;background:${pc(p.progress)}"></div></div>
     ${ch?`<div style="font-size:.68rem;color:var(--text-muted);margin-top:4px">${p.children.length} subprojetos →</div>`:''}
+    <div class="card-rz" onmousedown="startCardResize(event)"></div>
   </div>`;
 }
 
 function sectionHTML(c){
   if(c.type==='link')
-    return`<div class="sc" data-id="${c.id}"><h4>${c.title}</h4><div class="card-d">${c.desc}</div><div style="margin-top:6px"><a href="${c.url}" target="_blank">${c.url.replace('https://','')}</a></div>${c.extra?`<div style="font-size:.68rem;color:var(--text-muted);margin-top:3px">${c.extra}</div>`:''}</div>`;
+    return`<div class="sc" data-id="${c.id}"><h4>${c.title}</h4><div class="card-d">${c.desc}</div><div style="margin-top:6px"><a href="${c.url}" target="_blank">${c.url.replace('https://','')}</a></div>${c.extra?`<div style="font-size:.68rem;color:var(--text-muted);margin-top:3px">${c.extra}</div>`:''}<div class="card-rz" onmousedown="startCardResize(event)"></div></div>`;
   if(c.type==='project')
     return`<div class="card" draggable="true" data-id="${c.id}" onclick="openDetail('${c.id}')">
       <div class="card-t">${c.title}</div><div class="card-d">${c.desc}</div>
       ${c.metrics?`<div class="card-m">${c.metrics.map(m=>`<span class="b bb">${m.l}: ${m.v}</span>`).join('')}</div>`:''}
       <div style="font-size:.68rem;color:var(--text-muted);margin-top:4px">Clique para detalhes →</div>
+      <div class="card-rz" onmousedown="startCardResize(event)"></div>
     </div>`;
   if(c.type==='finance'){
     const s=c.receita-c.despesa,sc=s>=0?'var(--green)':'var(--red)';
@@ -488,11 +495,12 @@ function sectionHTML(c){
         <div><div style="font-size:.65rem;color:var(--text-muted)">Saldo</div><div style="font-size:1rem;font-weight:600;color:${sc}">${R$(s)}</div></div>
       </div>
       <div style="font-size:.68rem;color:var(--text-muted)">Ver detalhes →</div>
+      <div class="card-rz" onmousedown="startCardResize(event)"></div>
     </div>`;
   }
   if(c.type==='potes')
-    return`<div class="sc" data-id="${c.id}"><h4>${c.title} <span style="font-size:.68rem;color:var(--text-muted)">(base ${R$(c.base)})</span></h4><ul>${c.potes.map(p=>`<li><span class="v">${p.p}%</span> ${p.n} — <span class="mono">${R$(c.base*p.p/100)}</span></li>`).join('')}</ul></div>`;
-  return`<div class="sc" data-id="${c.id}"><h4>${c.title}</h4><ul>${c.items.map(i=>`<li><span class="v">${i.l}</span> — ${i.v}</li>`).join('')}</ul></div>`;
+    return`<div class="sc" data-id="${c.id}"><h4>${c.title} <span style="font-size:.68rem;color:var(--text-muted)">(base ${R$(c.base)})</span></h4><ul>${c.potes.map(p=>`<li><span class="v">${p.p}%</span> ${p.n} — <span class="mono">${R$(c.base*p.p/100)}</span></li>`).join('')}</ul><div class="card-rz" onmousedown="startCardResize(event)"></div></div>`;
+  return`<div class="sc" data-id="${c.id}"><h4>${c.title}</h4><ul>${c.items.map(i=>`<li><span class="v">${i.l}</span> — ${i.v}</li>`).join('')}</ul><div class="card-rz" onmousedown="startCardResize(event)"></div></div>`;
 }
 
 // ═══════════════════ DETAIL PAGE ═══════════════════
@@ -744,6 +752,39 @@ function loadLaneWidth(id){
   try{const d=JSON.parse(localStorage.getItem('dash-lane-widths')||'{}');return d[id]||null;}catch(e){return null;}
 }
 
+// ═══════════════════ CARD RESIZE ═══════════════════
+
+function startCardResize(e){
+  e.preventDefault();
+  e.stopPropagation();
+  const card=e.target.closest('.card,.sc');
+  if(!card)return;
+  const startY=e.clientY;
+  const startH=card.getBoundingClientRect().height;
+  card.style.overflow='hidden';
+  const onMove=ev=>{
+    const diff=ev.clientY-startY;
+    card.style.height=Math.max(40,startH+diff)+'px';
+  };
+  const onUp=()=>{
+    document.removeEventListener('mousemove',onMove);
+    document.removeEventListener('mouseup',onUp);
+  };
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',onUp);
+}
+
+// ═══════════════════ LAYOUT TOGGLE ═══════════════════
+
+function toggleLayout(){
+  const board=document.getElementById('board');
+  board.classList.toggle('grid-layout');
+  try{localStorage.setItem('dash-grid',board.classList.contains('grid-layout')?'1':'');}catch(e){}
+}
+function loadLayout(){
+  try{if(localStorage.getItem('dash-grid')==='1')document.getElementById('board').classList.add('grid-layout');}catch(e){}
+}
+
 // ═══════════════════ THEME ═══════════════════
 
 function toggleTheme(){
@@ -755,6 +796,7 @@ function toggleTheme(){
 
 // ═══════════════════ INIT ═══════════════════
 renderBoard();
+loadLayout();
 </script>
 </body>
 </html>
