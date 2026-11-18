@@ -24,6 +24,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 
 /* BOARD */
 .board{display:flex;flex-wrap:wrap;gap:12px;padding:16px;min-height:calc(100vh - 52px);align-items:flex-start;align-content:flex-start;padding-bottom:120px}
+.lane-break{flex-basis:100%;height:0;margin:0;padding:0}
 .lane{flex:0 0 320px;background:var(--bg-lane);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;position:relative;transition:border-color .15s;min-width:180px;min-height:120px}
 .lane.drag-over-lane{border-color:var(--accent);box-shadow:0 0 0 2px rgba(88,166,255,.25)}
 .lane.drag-over{background:var(--drag-over);border-color:var(--accent)}
@@ -422,11 +423,11 @@ function renderBoard(){
   board.classList.remove('hidden');
   document.getElementById('page-detail').classList.remove('active');
 
-  const order=loadLaneOrder();
-  const lanes=order?order.map(id=>LANES.find(l=>l.id===id)).filter(Boolean):LANES;
+  const saved=loadLaneOrder();
+  // saved can contain lane ids and '|' for breaks
+  const seq=saved?saved:LANES.map(l=>l.id);
 
-  let html='';
-  lanes.forEach((lane,i)=>{
+  function laneHTML(lane){
     const cards=lane.id==='projetos'?P.filter(p=>!p.parent).map(cardHTML).join(''):
       lane.id==='saude'?SAUDE.map(sectionHTML).join(''):
       lane.id==='espiritual'?ESPIR.map(sectionHTML).join(''):
@@ -435,7 +436,7 @@ function renderBoard(){
       lane.id==='saude'?SAUDE.length:lane.id==='espiritual'?ESPIR.length:FIN.length;
     const sz=loadLaneSize(lane.id);
     const sty=`border-top:3px solid ${lane.color};${sz?`flex-basis:${sz.w}px;height:${sz.h}px`:''}`;
-    html+=`<div class="lane" data-lane="${lane.id}" style="${sty}">
+    return`<div class="lane" data-lane="${lane.id}" style="${sty}">
       <div class="lane-hdr" draggable="true" data-lane-drag="${lane.id}">
         <span class="lane-ico">${lane.icon}</span>
         <span class="lane-ttl">${lane.title}</span>
@@ -444,7 +445,18 @@ function renderBoard(){
       <div class="lane-body" data-lane="${lane.id}">${cards}</div>
       <div class="lane-resize" data-resize-lane="${lane.id}"></div>
     </div>`;
+  }
+
+  let html='';
+  const rendered=new Set();
+  seq.forEach(item=>{
+    if(item==='|'){html+='<div class="lane-break"></div>';return;}
+    const lane=LANES.find(l=>l.id===item);
+    if(lane&&!rendered.has(item)){html+=laneHTML(lane);rendered.add(item);}
   });
+  // Render any lanes not in saved order
+  LANES.forEach(lane=>{if(!rendered.has(lane.id))html+=laneHTML(lane);});
+
   board.innerHTML=html;
   initCardDrag();
   initLaneDrag();
@@ -453,7 +465,7 @@ function renderBoard(){
 
 function cardHTML(p){
   const ch=p.children&&p.children.length;
-  return`<div class="card" draggable="true" data-id="${p.id}" onclick="openDetail('${p.id}')">
+  return`<div class="card" draggable="true" data-id="${p.id}" onclick="if(!_rz)openDetail('${p.id}')">
     <div class="card-t">${p.title}</div>
     <div class="card-d">${p.desc}</div>
     <div class="card-m">
@@ -471,7 +483,7 @@ function sectionHTML(c){
   if(c.type==='link')
     return`<div class="sc" data-id="${c.id}"><h4>${c.title}</h4><div class="card-d">${c.desc}</div><div style="margin-top:6px"><a href="${c.url}" target="_blank">${c.url.replace('https://','')}</a></div>${c.extra?`<div style="font-size:.68rem;color:var(--text-muted);margin-top:3px">${c.extra}</div>`:''}<div class="card-rz" onmousedown="startCardResize(event)"></div></div>`;
   if(c.type==='project')
-    return`<div class="card" draggable="true" data-id="${c.id}" onclick="openDetail('${c.id}')">
+    return`<div class="card" draggable="true" data-id="${c.id}" onclick="if(!_rz)openDetail('${c.id}')">
       <div class="card-t">${c.title}</div><div class="card-d">${c.desc}</div>
       ${c.metrics?`<div class="card-m">${c.metrics.map(m=>`<span class="b bb">${m.l}: ${m.v}</span>`).join('')}</div>`:''}
       <div style="font-size:.68rem;color:var(--text-muted);margin-top:4px">Clique para detalhes →</div>
@@ -479,7 +491,7 @@ function sectionHTML(c){
     </div>`;
   if(c.type==='finance'){
     const s=c.receita-c.despesa,sc=s>=0?'var(--green)':'var(--red)';
-    return`<div class="sc" data-id="${c.id}" style="cursor:pointer" onclick="openFinanceDetail()">
+    return`<div class="sc" data-id="${c.id}" style="cursor:pointer" onclick="if(!_rz)openFinanceDetail()">
       <h4>${c.title}</h4>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:6px 0;text-align:center">
         <div><div style="font-size:.65rem;color:var(--text-muted)">Receita</div><div style="font-size:1rem;font-weight:600;color:var(--green)">${R$(c.receita)}</div></div>
@@ -646,10 +658,12 @@ function getAfter(c,y,x){
   return best;
 }
 
-// ═══════════════════ LANE DRAG (reorder — works with flex-wrap) ═══════════════════
+// ═══════════════════ LANE DRAG (reorder + stack below) ═══════════════════
 
 function initLaneDrag(){
   let dragLaneId=null;
+  let indicator=null;
+
   document.querySelectorAll('.lane-hdr[draggable]').forEach(hdr=>{
     hdr.addEventListener('dragstart',e=>{
       dragLaneId=hdr.dataset.laneDrag;
@@ -660,7 +674,8 @@ function initLaneDrag(){
     hdr.addEventListener('dragend',()=>{
       hdr.closest('.lane').style.opacity='';
       dragLaneId=null;
-      document.querySelectorAll('.lane').forEach(l=>l.classList.remove('drag-over-lane'));
+      document.querySelectorAll('.lane').forEach(l=>{l.classList.remove('drag-over-lane');l.removeAttribute('data-drop-side');});
+      if(indicator){indicator.remove();indicator=null;}
     });
   });
 
@@ -670,46 +685,104 @@ function initLaneDrag(){
     e.preventDefault();
     e.dataTransfer.dropEffect='move';
     const allLanes=[...board.querySelectorAll('.lane')];
-    allLanes.forEach(l=>l.classList.remove('drag-over-lane'));
-    const closest=getLaneAt(allLanes,e.clientX,e.clientY,dragLaneId);
-    if(closest)closest.el.classList.add('drag-over-lane');
+    allLanes.forEach(l=>{l.classList.remove('drag-over-lane');l.removeAttribute('data-drop-side');});
+    const hit=getDropTarget(allLanes,e.clientX,e.clientY,dragLaneId);
+    if(hit&&hit.el){
+      hit.el.classList.add('drag-over-lane');
+      hit.el.setAttribute('data-drop-side',hit.side);
+    }
   });
+
   board.addEventListener('drop',e=>{
     if(!dragLaneId)return;
     e.preventDefault();
     const allLanes=[...board.querySelectorAll('.lane')];
-    allLanes.forEach(l=>l.classList.remove('drag-over-lane'));
+    allLanes.forEach(l=>{l.classList.remove('drag-over-lane');l.removeAttribute('data-drop-side');});
     const src=allLanes.find(l=>l.dataset.lane===dragLaneId);
     if(!src)return;
-    const closest=getLaneAt(allLanes,e.clientX,e.clientY,dragLaneId);
-    if(closest){
-      if(closest.after)closest.el.after(src);
-      else board.insertBefore(src,closest.el);
-    }else{
+
+    // Remove any existing break before src
+    const prevSib=src.previousElementSibling;
+    if(prevSib&&prevSib.classList.contains('lane-break'))prevSib.remove();
+
+    const hit=getDropTarget(allLanes,e.clientX,e.clientY,dragLaneId);
+    if(!hit){
+      // Dropped in empty space — add break + append
+      const br=document.createElement('div');br.className='lane-break';
+      board.appendChild(br);
       board.appendChild(src);
+    }else if(hit.side==='below'){
+      // Insert break + lane after target
+      const br=document.createElement('div');br.className='lane-break';
+      hit.el.after(br);
+      br.after(src);
+    }else if(hit.side==='left'){
+      // Insert before target (same row)
+      board.insertBefore(src,hit.el);
+    }else{
+      // right — insert after target (same row)
+      const next=hit.el.nextElementSibling;
+      if(next&&next.classList.contains('lane-break')){
+        board.insertBefore(src,next);
+      }else{
+        hit.el.after(src);
+      }
     }
+    // Clean up orphan breaks (two breaks in a row, or break at start)
+    cleanBreaks(board);
     saveLaneOrder();
   });
 }
 
-function getLaneAt(lanes,mx,my,skipId){
+function getDropTarget(lanes,mx,my,skipId){
   const others=lanes.filter(l=>l.dataset.lane!==skipId);
   if(!others.length)return null;
-  // If mouse is below all lanes, append at end
   const maxBottom=Math.max(...others.map(l=>l.getBoundingClientRect().bottom));
-  if(my>maxBottom+20)return null;
+  if(my>maxBottom+30)return null;
+
   let best=null,bestDist=Infinity;
   for(const l of others){
     const r=l.getBoundingClientRect();
     const cx=r.left+r.width/2,cy=r.top+r.height/2;
     const d=Math.hypot(mx-cx,my-cy);
-    if(d<bestDist){bestDist=d;best={el:l,after:my>cy||(Math.abs(my-cy)<r.height/3&&mx>cx)};}
+    if(d<bestDist){bestDist=d;best=l;}
   }
-  return best;
+  if(!best)return null;
+  const r=best.getBoundingClientRect();
+  const relY=(my-r.top)/r.height;
+  const relX=(mx-r.left)/r.width;
+  let side;
+  if(relY>0.7) side='below';
+  else if(relX<0.5) side='left';
+  else side='right';
+  return{el:best,side};
+}
+
+function cleanBreaks(board){
+  const children=[...board.children];
+  for(let i=0;i<children.length;i++){
+    const c=children[i];
+    if(!c.classList.contains('lane-break'))continue;
+    const prev=children[i-1];
+    const next=children[i+1];
+    if(!prev||!next||prev.classList.contains('lane-break')||next.classList.contains('lane-break')){
+      c.remove();
+    }
+  }
+  // Remove break at start
+  if(board.firstElementChild&&board.firstElementChild.classList.contains('lane-break'))board.firstElementChild.remove();
 }
 
 function saveLaneOrder(){
-  try{const o=[...document.querySelectorAll('.lane')].map(l=>l.dataset.lane);localStorage.setItem('dash-lane-order',JSON.stringify(o));}catch(e){}
+  try{
+    const board=document.getElementById('board');
+    const seq=[];
+    [...board.children].forEach(c=>{
+      if(c.classList.contains('lane'))seq.push(c.dataset.lane);
+      else if(c.classList.contains('lane-break'))seq.push('|');
+    });
+    localStorage.setItem('dash-lane-order',JSON.stringify(seq));
+  }catch(e){}
 }
 function loadLaneOrder(){
   try{const s=localStorage.getItem('dash-lane-order');return s?JSON.parse(s):null;}catch(e){return null;}
@@ -751,9 +824,11 @@ function loadLaneSize(id){
 
 // ═══════════════════ CARD RESIZE (corner — W+H) ═══════════════════
 
+let _rz=false;
 function startCardResize(e){
   e.preventDefault();
   e.stopPropagation();
+  _rz=true;
   const card=e.target.closest('.card,.sc');
   if(!card)return;
   const startX=e.clientX,startY=e.clientY;
@@ -767,6 +842,7 @@ function startCardResize(e){
   const onUp=()=>{
     document.removeEventListener('mousemove',onMove);
     document.removeEventListener('mouseup',onUp);
+    setTimeout(()=>_rz=false,50);
   };
   document.addEventListener('mousemove',onMove);
   document.addEventListener('mouseup',onUp);
