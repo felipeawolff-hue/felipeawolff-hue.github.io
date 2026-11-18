@@ -23,12 +23,8 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .tbtn:hover{border-color:var(--accent);color:var(--accent)}
 
 /* BOARD */
-.board{display:flex;gap:0;padding:16px 16px;overflow-x:auto;scroll-snap-type:x mandatory;min-height:calc(100vh - 52px);align-items:flex-start}
-.board.grid-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px;overflow-x:visible;scroll-snap-type:none}
-.board.grid-layout .lane-gap{display:none}
-.board.grid-layout .lane{flex:none!important;width:100%!important;max-height:none}
-.board.grid-layout .lane-resize{display:none}
-.lane{flex:0 0 320px;scroll-snap-align:start;background:var(--bg-lane);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;max-height:calc(100vh - 80px);position:relative;transition:border-color .15s;min-width:200px}
+.board{display:flex;flex-wrap:wrap;gap:12px;padding:16px;min-height:calc(100vh - 52px);align-items:flex-start}
+.lane{flex:0 0 320px;background:var(--bg-lane);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;position:relative;transition:border-color .15s;min-width:180px;min-height:120px}
 .lane.drag-over-lane{border-color:var(--accent);box-shadow:0 0 0 2px rgba(88,166,255,.25)}
 .lane.drag-over{background:var(--drag-over);border-color:var(--accent)}
 .lane-hdr{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg-lh);border-radius:var(--r) var(--r) 0 0;display:flex;align-items:center;gap:8px;cursor:grab;user-select:none}
@@ -38,12 +34,10 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .lane-cnt{font-size:.7rem;color:var(--text-muted);background:var(--bg);padding:2px 7px;border-radius:10px}
 .lane-body{padding:6px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:6px;min-height:50px}
 
-/* LANE RESIZE HANDLE */
-.lane-resize{position:absolute;top:0;right:-6px;width:12px;height:100%;cursor:col-resize;z-index:10}
-.lane-resize::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:3px;height:28px;background:var(--border);border-radius:2px;opacity:0;transition:opacity .15s}
-.lane-resize:hover::after,.lane-resize.active::after{opacity:1;background:var(--accent)}
-/* GAP between lanes */
-.lane-gap{flex:0 0 12px;min-width:12px}
+/* LANE RESIZE HANDLE — corner */
+.lane-resize{position:absolute;bottom:0;right:0;width:18px;height:18px;cursor:nwse-resize;z-index:10}
+.lane-resize::after{content:'';position:absolute;bottom:4px;right:4px;width:8px;height:8px;border-right:2px solid var(--border);border-bottom:2px solid var(--border);opacity:0;transition:opacity .15s}
+.lane:hover .lane-resize::after,.lane-resize.active::after{opacity:1;border-color:var(--accent)}
 
 /* CARDS */
 .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;position:relative;overflow:hidden;min-height:40px}
@@ -56,10 +50,10 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .card-m{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
 .card-expand{max-height:none!important}
 
-/* CARD RESIZE HANDLE */
-.card-rz{height:8px;cursor:ns-resize;display:flex;justify-content:center;align-items:center;margin-top:4px}
-.card-rz::after{content:'';width:24px;height:3px;background:var(--border);border-radius:2px;opacity:0;transition:opacity .15s}
-.card:hover .card-rz::after{opacity:1}
+/* CARD RESIZE HANDLE — corner */
+.card-rz{position:absolute;bottom:0;right:0;width:14px;height:14px;cursor:nwse-resize;z-index:5}
+.card-rz::after{content:'';position:absolute;bottom:3px;right:3px;width:6px;height:6px;border-right:2px solid var(--border);border-bottom:2px solid var(--border);opacity:0;transition:opacity .15s}
+.card:hover .card-rz::after,.sc:hover .card-rz::after{opacity:1;border-color:var(--accent)}
 
 /* BADGES */
 .b{font-size:.68rem;padding:2px 6px;border-radius:3px;font-weight:500;white-space:nowrap}
@@ -116,10 +110,9 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 
 /* MOBILE */
 @media(max-width:768px){
-  .board{flex-direction:column;scroll-snap-type:none;gap:12px}
+  .board{flex-direction:column}
   .lane{flex:none!important;width:100%!important;max-height:none;min-width:0}
   .lane-resize{display:none}
-  .lane-gap{display:none}
 }
 </style>
 </head>
@@ -129,7 +122,6 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
   <h1>Dashboard</h1>
   <div class="hdr-r">
     <span style="font-size:.72rem;color:var(--text-muted)">snapshot 18/nov</span>
-    <button class="tbtn" onclick="toggleLayout()" title="Empilhar / lado a lado">▦</button>
     <button class="tbtn" onclick="toggleTheme()">◐</button>
   </div>
 </div>
@@ -435,15 +427,15 @@ function renderBoard(){
 
   let html='';
   lanes.forEach((lane,i)=>{
-    if(i>0) html+='<div class="lane-gap"></div>';
     const cards=lane.id==='projetos'?P.filter(p=>!p.parent).map(cardHTML).join(''):
       lane.id==='saude'?SAUDE.map(sectionHTML).join(''):
       lane.id==='espiritual'?ESPIR.map(sectionHTML).join(''):
       FIN.map(sectionHTML).join('');
     const cnt=lane.id==='projetos'?P.filter(p=>!p.parent).length:
       lane.id==='saude'?SAUDE.length:lane.id==='espiritual'?ESPIR.length:FIN.length;
-    const w=loadLaneWidth(lane.id);
-    html+=`<div class="lane" data-lane="${lane.id}" style="border-top:3px solid ${lane.color};${w?'flex-basis:'+w+'px':''}">
+    const sz=loadLaneSize(lane.id);
+    const sty=`border-top:3px solid ${lane.color};${sz?`flex-basis:${sz.w}px;height:${sz.h}px`:''}`;
+    html+=`<div class="lane" data-lane="${lane.id}" style="${sty}">
       <div class="lane-hdr" draggable="true" data-lane-drag="${lane.id}">
         <span class="lane-ico">${lane.icon}</span>
         <span class="lane-ttl">${lane.title}</span>
@@ -650,7 +642,7 @@ function getAfter(c,y){
   },{offset:-Infinity}).element;
 }
 
-// ═══════════════════ LANE DRAG (reorder lanes) ═══════════════════
+// ═══════════════════ LANE DRAG (reorder — works with flex-wrap) ═══════════════════
 
 function initLaneDrag(){
   let dragLaneId=null;
@@ -668,76 +660,73 @@ function initLaneDrag(){
     });
   });
 
-  document.querySelectorAll('.lane').forEach(lane=>{
-    lane.addEventListener('dragover',e=>{
-      const data=e.dataTransfer.types;
-      if(!data.includes('text/plain'))return;
-      e.preventDefault();
-      if(dragLaneId&&lane.dataset.lane!==dragLaneId){
-        lane.classList.add('drag-over-lane');
-      }
-    });
-    lane.addEventListener('dragleave',e=>{
-      if(!lane.contains(e.relatedTarget))lane.classList.remove('drag-over-lane');
-    });
-    lane.addEventListener('drop',e=>{
-      lane.classList.remove('drag-over-lane');
-      if(!dragLaneId)return;
-      const targetId=lane.dataset.lane;
-      if(targetId===dragLaneId)return;
-      e.preventDefault();
-      e.stopPropagation();
-      // Swap lanes
-      const board=document.getElementById('board');
-      const allLanes=[...board.querySelectorAll('.lane')];
-      const srcLane=allLanes.find(l=>l.dataset.lane===dragLaneId);
-      const tgtLane=lane;
-      if(!srcLane)return;
-      const srcGap=srcLane.previousElementSibling;
-      const tgtGap=tgtLane.previousElementSibling;
-      // Insert src before target
-      if(tgtGap&&tgtGap.classList.contains('lane-gap')){
-        board.insertBefore(srcLane,tgtGap);
-        if(srcGap&&srcGap.classList.contains('lane-gap'))board.insertBefore(srcGap,srcLane);
-      }else{
-        board.insertBefore(srcLane,tgtLane);
-      }
-      saveLaneOrder();
-    });
+  const board=document.getElementById('board');
+  board.addEventListener('dragover',e=>{
+    if(!dragLaneId)return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect='move';
+    const allLanes=[...board.querySelectorAll('.lane')];
+    allLanes.forEach(l=>l.classList.remove('drag-over-lane'));
+    const closest=getLaneAt(allLanes,e.clientX,e.clientY,dragLaneId);
+    if(closest)closest.el.classList.add('drag-over-lane');
+  });
+  board.addEventListener('drop',e=>{
+    if(!dragLaneId)return;
+    e.preventDefault();
+    const allLanes=[...board.querySelectorAll('.lane')];
+    allLanes.forEach(l=>l.classList.remove('drag-over-lane'));
+    const src=allLanes.find(l=>l.dataset.lane===dragLaneId);
+    if(!src)return;
+    const closest=getLaneAt(allLanes,e.clientX,e.clientY,dragLaneId);
+    if(closest){
+      if(closest.after)closest.el.after(src);
+      else board.insertBefore(src,closest.el);
+    }else{
+      board.appendChild(src);
+    }
+    saveLaneOrder();
   });
 }
 
+function getLaneAt(lanes,mx,my,skipId){
+  let best=null,bestDist=Infinity;
+  for(const l of lanes){
+    if(l.dataset.lane===skipId)continue;
+    const r=l.getBoundingClientRect();
+    const cx=r.left+r.width/2,cy=r.top+r.height/2;
+    const d=Math.hypot(mx-cx,my-cy);
+    if(d<bestDist){bestDist=d;best={el:l,after:mx>cx||my>cy+r.height/4};}
+  }
+  return best;
+}
+
 function saveLaneOrder(){
-  try{
-    const order=[...document.querySelectorAll('.lane')].map(l=>l.dataset.lane);
-    localStorage.setItem('dash-lane-order',JSON.stringify(order));
-  }catch(e){}
+  try{const o=[...document.querySelectorAll('.lane')].map(l=>l.dataset.lane);localStorage.setItem('dash-lane-order',JSON.stringify(o));}catch(e){}
 }
 function loadLaneOrder(){
   try{const s=localStorage.getItem('dash-lane-order');return s?JSON.parse(s):null;}catch(e){return null;}
 }
 
-// ═══════════════════ LANE RESIZE ═══════════════════
+// ═══════════════════ LANE RESIZE (corner — W+H) ═══════════════════
 
 function initLaneResize(){
   document.querySelectorAll('.lane-resize').forEach(handle=>{
-    let startX,startW,lane;
     handle.addEventListener('mousedown',e=>{
       e.preventDefault();
-      lane=handle.closest('.lane');
-      startX=e.clientX;
-      startW=lane.getBoundingClientRect().width;
+      const lane=handle.closest('.lane');
+      const startX=e.clientX,startY=e.clientY;
+      const rect=lane.getBoundingClientRect();
+      const startW=rect.width,startH=rect.height;
       handle.classList.add('active');
       const onMove=ev=>{
-        const diff=ev.clientX-startX;
-        const newW=Math.max(200,Math.min(800,startW+diff));
-        lane.style.flexBasis=newW+'px';
+        lane.style.flexBasis=Math.max(180,startW+(ev.clientX-startX))+'px';
+        lane.style.height=Math.max(120,startH+(ev.clientY-startY))+'px';
       };
       const onUp=()=>{
         handle.classList.remove('active');
         document.removeEventListener('mousemove',onMove);
         document.removeEventListener('mouseup',onUp);
-        saveLaneWidth(lane.dataset.lane,parseInt(lane.style.flexBasis));
+        saveLaneSize(lane.dataset.lane,parseInt(lane.style.flexBasis),parseInt(lane.style.height));
       };
       document.addEventListener('mousemove',onMove);
       document.addEventListener('mouseup',onUp);
@@ -745,26 +734,27 @@ function initLaneResize(){
   });
 }
 
-function saveLaneWidth(id,w){
-  try{const d=JSON.parse(localStorage.getItem('dash-lane-widths')||'{}');d[id]=w;localStorage.setItem('dash-lane-widths',JSON.stringify(d));}catch(e){}
+function saveLaneSize(id,w,h){
+  try{const d=JSON.parse(localStorage.getItem('dash-lane-sizes')||'{}');d[id]={w,h};localStorage.setItem('dash-lane-sizes',JSON.stringify(d));}catch(e){}
 }
-function loadLaneWidth(id){
-  try{const d=JSON.parse(localStorage.getItem('dash-lane-widths')||'{}');return d[id]||null;}catch(e){return null;}
+function loadLaneSize(id){
+  try{const d=JSON.parse(localStorage.getItem('dash-lane-sizes')||'{}');return d[id]||null;}catch(e){return null;}
 }
 
-// ═══════════════════ CARD RESIZE ═══════════════════
+// ═══════════════════ CARD RESIZE (corner — W+H) ═══════════════════
 
 function startCardResize(e){
   e.preventDefault();
   e.stopPropagation();
   const card=e.target.closest('.card,.sc');
   if(!card)return;
-  const startY=e.clientY;
-  const startH=card.getBoundingClientRect().height;
+  const startX=e.clientX,startY=e.clientY;
+  const rect=card.getBoundingClientRect();
+  const startW=rect.width,startH=rect.height;
   card.style.overflow='hidden';
   const onMove=ev=>{
-    const diff=ev.clientY-startY;
-    card.style.height=Math.max(40,startH+diff)+'px';
+    card.style.width=Math.max(100,startW+(ev.clientX-startX))+'px';
+    card.style.height=Math.max(40,startH+(ev.clientY-startY))+'px';
   };
   const onUp=()=>{
     document.removeEventListener('mousemove',onMove);
@@ -772,17 +762,6 @@ function startCardResize(e){
   };
   document.addEventListener('mousemove',onMove);
   document.addEventListener('mouseup',onUp);
-}
-
-// ═══════════════════ LAYOUT TOGGLE ═══════════════════
-
-function toggleLayout(){
-  const board=document.getElementById('board');
-  board.classList.toggle('grid-layout');
-  try{localStorage.setItem('dash-grid',board.classList.contains('grid-layout')?'1':'');}catch(e){}
-}
-function loadLayout(){
-  try{if(localStorage.getItem('dash-grid')==='1')document.getElementById('board').classList.add('grid-layout');}catch(e){}
 }
 
 // ═══════════════════ THEME ═══════════════════
@@ -796,7 +775,6 @@ function toggleTheme(){
 
 // ═══════════════════ INIT ═══════════════════
 renderBoard();
-loadLayout();
 </script>
 </body>
 </html>
