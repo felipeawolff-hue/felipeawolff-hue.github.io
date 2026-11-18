@@ -3,332 +3,758 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard de Projetos</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0f1117;
-  --bg-card: #1a1d27;
-  --bg-hover: #222636;
-  --bg-branch: #14161e;
-  --border: #2a2e3d;
-  --text: #e8eaf0;
-  --text-dim: #8b90a0;
-  --text-muted: #5a5f72;
-  --accent: #6c8cff;
-  --accent-dim: rgba(108,140,255,.12);
-  --green: #4ade80;
-  --green-dim: rgba(74,222,128,.12);
-  --yellow: #fbbf24;
-  --yellow-dim: rgba(251,191,36,.12);
-  --red: #f87171;
-  --red-dim: rgba(248,113,113,.12);
-  --purple: #a78bfa;
-  --purple-dim: rgba(167,139,250,.12);
-  --orange: #fb923c;
-  --orange-dim: rgba(251,146,60,.12);
-  --cyan: #22d3ee;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg: #f5f6fa; --bg-card: #ffffff; --bg-hover: #f0f1f5;
-    --bg-branch: #f8f9fc; --border: #e2e4ea; --text: #1a1d27;
-    --text-dim: #5a5f72; --text-muted: #8b90a0;
-    --accent: #4a6cf7; --accent-dim: rgba(74,108,247,.08);
-    --green-dim: rgba(34,197,94,.08); --yellow-dim: rgba(234,179,8,.08);
-    --red-dim: rgba(239,68,68,.08); --purple-dim: rgba(139,92,246,.08);
-    --orange-dim: rgba(234,88,12,.08);
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0f1117; --bg-card: #1a1d27; --bg-hover: #222636;
-  --bg-branch: #14161e; --border: #2a2e3d; --text: #e8eaf0;
-  --text-dim: #8b90a0; --text-muted: #5a5f72;
-  --accent: #6c8cff; --accent-dim: rgba(108,140,255,.12);
-  --green-dim: rgba(74,222,128,.12); --yellow-dim: rgba(251,191,36,.12);
-  --red-dim: rgba(248,113,113,.12); --purple-dim: rgba(167,139,250,.12);
-  --orange-dim: rgba(251,146,60,.12);
-}
+:root{--bg:#0D1117;--bg-card:#161B22;--bg-lane:#0D1117;--bg-lh:#161B22;--bg-detail:#161B22;--text:#E6EDF3;--text-dim:#8B949E;--text-muted:#484F58;--border:#21262D;--accent:#58A6FF;--green:#3FB950;--yellow:#D29922;--orange:#DB6D28;--red:#F85149;--purple:#BC8CFF;--rose:#B76E79;--drag-over:rgba(88,166,255,.12);--r:10px;--rs:6px;--shadow:0 2px 8px rgba(0,0,0,.3)}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#F6F8FA;--bg-card:#FFF;--bg-lane:#F0F2F5;--bg-lh:#FFF;--bg-detail:#FFF;--text:#1F2328;--text-dim:#656D76;--text-muted:#B0B8C1;--border:#D1D9E0;--shadow:0 2px 8px rgba(0,0,0,.08);--drag-over:rgba(88,166,255,.08)}}
+:root[data-theme="dark"]{--bg:#0D1117;--bg-card:#161B22;--bg-lane:#0D1117;--bg-lh:#161B22;--bg-detail:#161B22;--text:#E6EDF3;--text-dim:#8B949E;--text-muted:#484F58;--border:#21262D;--shadow:0 2px 8px rgba(0,0,0,.3);--drag-over:rgba(88,166,255,.12)}
+:root[data-theme="light"]{--bg:#F6F8FA;--bg-card:#FFF;--bg-lane:#F0F2F5;--bg-lh:#FFF;--bg-detail:#FFF;--text:#1F2328;--text-dim:#656D76;--text-muted:#B0B8C1;--border:#D1D9E0;--shadow:0 2px 8px rgba(0,0,0,.08);--drag-over:rgba(88,166,255,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
-#app{max-width:900px;margin:0 auto;padding:24px 16px 80px}
-.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.header h1{font-family:var(--font-display);font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.header .sync-info{font-size:.75rem;color:var(--text-muted);font-family:var(--font-mono)}
-.subtitle{font-size:.85rem;color:var(--text-dim);margin-bottom:20px}
-.governance{background:var(--yellow-dim);border:1px solid rgba(251,191,36,.2);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:24px;font-size:.8rem;color:var(--yellow);display:flex;align-items:flex-start;gap:8px}
-.governance .icon{font-size:1rem;flex-shrink:0}
-.pilar-section{margin-bottom:28px}
-.pilar-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.pilar-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:.8rem;background:var(--accent-dim);color:var(--accent)}
-.pilar-name{font-family:var(--font-display);font-weight:600;font-size:1.05rem;flex:1}
-.priority-tag{font-size:.65rem;font-weight:600;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
-.priority-tag.p1{background:var(--green-dim);color:var(--green)}
-.priority-tag.p2{background:var(--yellow-dim);color:var(--yellow)}
-.priority-tag.p3{background:var(--purple-dim);color:var(--purple)}
-.project-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:background .15s,border-color .15s,transform .1s}
-.project-card:hover{background:var(--bg-hover);border-color:var(--accent);transform:translateY(-1px)}
-.project-card .row{display:flex;align-items:center;gap:10px}
-.project-card .name{font-family:var(--font-display);font-weight:600;font-size:.95rem;flex:1}
-.project-card .status-badge{font-size:.7rem;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap}
-.project-card .desc{font-size:.78rem;color:var(--text-dim);margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.project-card .progress-row{display:flex;align-items:center;gap:8px;margin-top:8px}
-.progress-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
-.progress-fill{height:100%;border-radius:2px;transition:width .4s ease}
-.progress-pct{font-size:.7rem;font-family:var(--font-mono);color:var(--text-muted);min-width:32px;text-align:right}
-.sub-indicator{font-size:.7rem;color:var(--text-muted);margin-left:12px}
-.status-concluido{background:var(--green-dim);color:var(--green)}
-.status-funcional,.status-operacional,.status-estavel{background:var(--accent-dim);color:var(--accent)}
-.status-andamento,.status-refinamento,.status-teste,.status-ativo{background:var(--yellow-dim);color:var(--yellow)}
-.status-planejado,.status-arquitetado,.status-estruturado{background:var(--purple-dim);color:var(--purple)}
-.status-pausado{background:var(--orange-dim);color:var(--orange)}
-.status-cancelado{background:var(--red-dim);color:var(--red)}
-.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--accent);cursor:pointer;margin-bottom:16px;background:none;border:none;font-family:var(--font-body);padding:4px 0}
-.back-btn:hover{text-decoration:underline}
-.detail-header{margin-bottom:20px}
-.detail-header h2{font-family:var(--font-display);font-size:1.4rem;font-weight:700;margin-bottom:4px}
-.detail-header .detail-desc{font-size:.85rem;color:var(--text-dim)}
-.detail-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.meta-chip{font-size:.72rem;padding:4px 10px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim)}
-.meta-chip strong{color:var(--text)}
-.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:16px}
-.stat-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center}
-.stat-box .val{font-family:var(--font-display);font-size:1.5rem;font-weight:700}
-.stat-box .label{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
-.filter-bar{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
-.filter-btn{font-size:.75rem;padding:5px 12px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font-body);transition:all .15s}
-.filter-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
-.filter-btn:hover:not(.active){border-color:var(--text-muted)}
-.branch{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
-.branch-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;transition:background .15s}
-.branch-header:hover{background:var(--bg-hover)}
-.branch-icon{font-size:1.1rem}
-.branch-name{font-family:var(--font-display);font-weight:600;font-size:.9rem;flex:1}
-.branch-count{font-size:.7rem;font-family:var(--font-mono);color:var(--text-muted)}
-.branch-chevron{font-size:.8rem;color:var(--text-muted);transition:transform .2s}
-.branch.open .branch-chevron{transform:rotate(90deg)}
-.branch-tasks{display:none;padding:0 14px 10px}
-.branch.open .branch-tasks{display:block}
-.task-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-top:1px solid var(--border)}
-.task-item:first-child{border-top:none}
-.task-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--border);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:.7rem}
-.task-check.done{background:var(--green);border-color:var(--green);color:#000}
-.task-check.paused{background:var(--orange);border-color:var(--orange);color:#000}
-.task-check.canceled{background:var(--red);border-color:var(--red);color:#000}
-.task-title{font-size:.82rem;flex:1}
-.task-title.done{color:var(--text-muted);text-decoration:line-through}
-.task-title.paused{color:var(--orange)}
-.task-title.canceled{color:var(--text-muted);text-decoration:line-through}
-.task-note{font-size:.72rem;color:var(--text-muted);margin-top:2px;font-style:italic}
-.sub-projects{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-top:8px}
-.loading{text-align:center;padding:60px 20px;color:var(--text-muted)}
-.loading .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.error-box{background:var(--red-dim);border:1px solid rgba(248,113,113,.2);border-radius:var(--radius-sm);padding:16px;text-align:center;color:var(--red);font-size:.85rem}
-.no-tasks{text-align:center;padding:30px 16px;color:var(--text-muted);font-size:.85rem}
-.no-tasks code{font-family:var(--font-mono);background:var(--bg-card);padding:2px 6px;border-radius:4px;font-size:.75rem}
-@media(max-width:480px){.header h1{font-size:1.3rem}.stats-bar{grid-template-columns:repeat(2,1fr)}.sub-projects{grid-template-columns:1fr}}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif}
+.mono{font-family:'JetBrains Mono',monospace;font-size:.85em}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;background:var(--bg)}
+.hdr h1{font-size:1.2rem;font-weight:700}
+.hdr-r{display:flex;gap:10px;align-items:center}
+.tbtn{background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:var(--rs);padding:5px 9px;cursor:pointer;font-size:.82rem}
+.tbtn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* BOARD */
+.board{display:flex;gap:0;padding:16px 16px;overflow-x:auto;scroll-snap-type:x mandatory;min-height:calc(100vh - 52px);align-items:flex-start}
+.lane{flex:0 0 320px;scroll-snap-align:start;background:var(--bg-lane);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;max-height:calc(100vh - 80px);position:relative;transition:border-color .15s;min-width:200px}
+.lane.drag-over-lane{border-color:var(--accent);box-shadow:0 0 0 2px rgba(88,166,255,.25)}
+.lane.drag-over{background:var(--drag-over);border-color:var(--accent)}
+.lane-hdr{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg-lh);border-radius:var(--r) var(--r) 0 0;display:flex;align-items:center;gap:8px;cursor:grab;user-select:none}
+.lane-hdr:active{cursor:grabbing}
+.lane-ico{font-size:1.1rem}
+.lane-ttl{font-size:.95rem;font-weight:600;flex:1}
+.lane-cnt{font-size:.7rem;color:var(--text-muted);background:var(--bg);padding:2px 7px;border-radius:10px}
+.lane-body{padding:6px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:6px;min-height:50px}
+
+/* LANE RESIZE HANDLE */
+.lane-resize{position:absolute;top:0;right:-6px;width:12px;height:100%;cursor:col-resize;z-index:10}
+.lane-resize::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:3px;height:28px;background:var(--border);border-radius:2px;opacity:0;transition:opacity .15s}
+.lane-resize:hover::after,.lane-resize.active::after{opacity:1;background:var(--accent)}
+/* GAP between lanes */
+.lane-gap{flex:0 0 12px;min-width:12px}
+
+/* CARDS */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;position:relative;overflow:hidden}
+.card:hover{border-color:var(--accent);box-shadow:var(--shadow);transform:translateY(-1px)}
+.card.dragging{opacity:.35;transform:scale(.95)}
+.card[draggable]{cursor:grab}
+.card[draggable]:active{cursor:grabbing}
+.card-t{font-size:.85rem;font-weight:600;margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.card-d{font-size:.75rem;color:var(--text-dim);line-height:1.4}
+.card-m{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.card-expand{max-height:none!important}
+
+/* CARD RESIZE HANDLE */
+.card-rz{height:8px;cursor:ns-resize;display:flex;justify-content:center;align-items:center;margin-top:4px}
+.card-rz::after{content:'';width:24px;height:3px;background:var(--border);border-radius:2px;opacity:0;transition:opacity .15s}
+.card:hover .card-rz::after{opacity:1}
+
+/* BADGES */
+.b{font-size:.68rem;padding:2px 6px;border-radius:3px;font-weight:500;white-space:nowrap}
+.bg{background:rgba(63,185,80,.15);color:var(--green)}
+.bb{background:rgba(88,166,255,.15);color:var(--accent)}
+.by{background:rgba(210,153,34,.15);color:var(--yellow)}
+.bo{background:rgba(219,109,40,.15);color:var(--orange)}
+.br{background:rgba(248,81,73,.15);color:var(--red)}
+.bp{background:rgba(188,140,255,.15);color:var(--purple)}
+.bd{background:rgba(139,148,158,.1);color:var(--text-muted)}
+
+/* PROGRESS */
+.pw{width:100%;height:4px;background:var(--border);border-radius:2px;margin-top:5px}
+.pb{height:100%;border-radius:2px;transition:width .3s}
+
+/* SECTION CARDS */
+.sc{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px}
+.sc h4{font-size:.8rem;font-weight:600;margin-bottom:5px}
+.sc ul{list-style:none;padding:0}
+.sc li{font-size:.75rem;color:var(--text-dim);padding:2px 0;border-bottom:1px solid var(--border)}
+.sc li:last-child{border:none}
+.sc .v{color:var(--text);font-weight:500}
+.sc a{color:var(--accent);text-decoration:none}
+.sc a:hover{text-decoration:underline}
+
+/* ═══ DETAIL PAGE ═══ */
+.page-detail{display:none;padding:20px;max-width:800px;margin:0 auto}
+.page-detail.active{display:block}
+.board.hidden{display:none}
+.back-link{color:var(--accent);text-decoration:none;font-size:.85rem;display:inline-flex;align-items:center;gap:4px;margin-bottom:16px}
+.back-link:hover{text-decoration:underline}
+.detail-head{margin-bottom:20px}
+.detail-head h2{font-size:1.4rem;margin-bottom:6px}
+.detail-head .meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.detail-sec{margin-top:24px}
+.detail-sec h3{font-size:1rem;color:var(--accent);margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:5px}
+.detail-sec p{font-size:.85rem;color:var(--text-dim);line-height:1.6}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.82rem}
+.kv dt{color:var(--text-dim)}.kv dd{color:var(--text)}
+.detail-sec table{width:100%;border-collapse:collapse;font-size:.82rem}
+.detail-sec td,.detail-sec th{padding:7px 10px;border-bottom:1px solid var(--border);text-align:left}
+.detail-sec th{color:var(--text-dim);font-weight:500}
+.cklist{list-style:none;padding:0}
+.cklist li{font-size:.82rem;padding:5px 0;color:var(--text-dim);border-bottom:1px solid var(--border)}
+.cklist li:last-child{border:none}
+.cklist li::before{content:'☐ ';color:var(--text-muted)}
+.cklist li.done{color:var(--text-muted);text-decoration:line-through}
+.cklist li.done::before{content:'☑ ';color:var(--green)}
+.sub-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem;cursor:pointer}
+.sub-item:hover{color:var(--accent)}
+.sub-item:last-child{border:none}
+.sub-prog{display:flex;align-items:center;gap:8px;flex:1}
+.sub-prog .pw{flex:1;height:6px}
+
+/* MOBILE */
+@media(max-width:768px){
+  .board{flex-direction:column;scroll-snap-type:none;gap:12px}
+  .lane{flex:none!important;width:100%!important;max-height:none;min-width:0}
+  .lane-resize{display:none}
+  .lane-gap{display:none}
+}
 </style>
 </head>
 <body>
-<div id="app">
-  <div class="loading"><div class="spinner"></div>Carregando dados...</div>
+
+<div class="hdr">
+  <h1>Dashboard</h1>
+  <div class="hdr-r">
+    <span style="font-size:.72rem;color:var(--text-muted)">snapshot 18/nov</span>
+    <button class="tbtn" onclick="toggleTheme()">◐</button>
+  </div>
 </div>
+
+<div class="board" id="board"></div>
+<div class="page-detail" id="page-detail"></div>
+
 <script>
-const SUPABASE_URL='https://fpuerkceromijuqcawgo.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZwdWVya2Nlcm9taWp1cWNhd2dvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NDY4MjksImV4cCI6MjA4ODMyMjgyOX0.EAPGWykxWjxEbq3L6ba1KG-q3dTD_ikKyrDmFQTJ5B0';
-const API=`${SUPABASE_URL}/rest/v1`;
-const H={'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`};
+// ═══════════════════ DATA ═══════════════════
 
-// Dados embutidos (snapshot) — usados quando fetch falha (ex: sandbox de artefato)
-const EMBEDDED_DATA={
-  pilars:[{id:1,number:1,name:"Core Infrastructure",priority:"P2",sort_order:1},{id:2,number:2,name:"Frente Comercial & Faturamento",priority:"P1",sort_order:2},{id:3,number:3,name:"Projetos Sociais & Institucionais",priority:"P3",sort_order:3},{id:4,number:4,name:"Capacitação Profissional",priority:"P3",sort_order:4},{id:5,number:5,name:"Espaço de Criação & Refúgio Cognitivo",priority:"P3",sort_order:5},{id:6,number:6,name:"Prospecção & Recursos Auxiliares",priority:"P2",sort_order:6}],
-  projects:[{id:1,pilar_id:1,parent_id:null,name:"Jarvis v5.0",status:"Pausado / Em Configuração",description:"AI Harness OS — Sistema Operacional de IA, CPU de Raciocínio, orquestração e memória multinível",progress:30,details:{meta:"Instância Oracle Cloud A1 + Docker Stack",gargalo:"Escassez de capacidade A1 na Oracle; log de 1,53 GB",acao:"Manter script oci_a1_grabber.py rodando; truncar error.log"},sort_order:1},{id:2,pilar_id:2,parent_id:null,name:"Taci Finanças",status:"Em andamento",description:"Motor de geração de receita, automação de vendas e produtos de trading",progress:45,details:{},sort_order:1},{id:3,pilar_id:2,parent_id:2,name:"Graph API + IA",status:"Arquitetado",description:"Motor de Conversão Oficial — assistente de vendas 24/7 integrado ao Instagram via Graph API da Meta",progress:20,details:{meta:"Atendimento automatizado Meta",gargalo:"Depende da liberação do jarvis-server na nuvem",acao:"Finalizar rotas do FastAPI no ambiente local para teste"},sort_order:1},{id:4,pilar_id:2,parent_id:2,name:"InstaFlow",status:"Em Teste / Ajuste",description:"Automação de Instagram em Kotlin — crescimento orgânico e prospecção de leads",progress:40,details:{meta:"Automação de crescimento Instagram",gargalo:"Rate limit agressivo da API do Instagram; bloqueio de IP",acao:"Ajustar delays de simulação no app Kotlin"},sort_order:2},{id:5,pilar_id:2,parent_id:2,name:"AutoLVN v8",status:"Em Refinamento Final",description:"Indicador de Order Flow para NinjaTrader 8 — produto comercializável para traders",progress:80,details:{meta:"Produto comercializável para NinjaTrader",gargalo:"Validação final de paredes de volume em dados reais",acao:"Concluir testes da v8 e preparar material de demonstração"},sort_order:3},{id:6,pilar_id:2,parent_id:2,name:"CashFlow 2.0",status:"Funcional",description:"Aplicação web para controle financeiro pessoal integrada ao Blogger + Supabase + Google Sheets",progress:70,details:{meta:"Sistema de controle financeiro pessoal",gargalo:"Sincronização e tratamento de exceções na API Gemini",acao:"Manter em uso pessoal e refinar prompts de Function Calling"},sort_order:4},{id:7,pilar_id:2,parent_id:2,name:"Ebooks",status:"Em andamento",description:"Infoprodutos educacionais R$97 — Kiwify (vendas diretas) e Hotmart (afiliados)",progress:50,details:{},sort_order:5},{id:8,pilar_id:2,parent_id:2,name:"Tráfego Orgânico",status:"Operacional",description:"Discovery Bot — 194 grupos mapeados, 50 validados. Prospecção em WhatsApp e Telegram",progress:60,details:{grupos_mapeados:194,grupos_validados:50},sort_order:6},{id:9,pilar_id:3,parent_id:null,name:"THApp",status:"Estável / 252 Usuários",description:"Ecossistema Mobile Gamificado — Estaca Cumbica (~2.700 membros)",progress:65,details:{meta:"Automação da História da Família na Estaca",gargalo:"Expiração de ordenanças e fluxo de aprovação de PDFs",acao:"Implementar agente tutor Elias e otimizar rotinas do n8n",usuarios:252,telas:22,oficinas:8},sort_order:1},{id:10,pilar_id:4,parent_id:null,name:"Massoterapia",status:"Planejado / Estruturado",description:"Formação técnico-clínica em terapias manuais — 6 módulos progressivos",progress:10,details:{meta:"Formação técnica e clínica",gargalo:"Conciliação de tempo de estudo teórico e prática manual",acao:"Iniciar cronograma pelo Módulo 1 (Anatomofisiologia)",modulos:6},sort_order:1},{id:11,pilar_id:5,parent_id:null,name:"Caixa de Areia",status:"Ativo",description:"Sandbox criativa — produção musical e despressurização cognitiva",progress:50,details:{},sort_order:1},{id:12,pilar_id:5,parent_id:11,name:"Child of the Pull",status:"Ativo",description:"Composição musical autoral e experimentação sonora",progress:30,details:{},sort_order:1},{id:13,pilar_id:5,parent_id:11,name:"BOM Romaji",status:"Concluído",description:"Livro de Mórmon em Romaji — PDF 630 páginas, 15 livros, 239 capítulos",progress:100,details:{},sort_order:2},{id:14,pilar_id:6,parent_id:null,name:"Job Hunter",status:"Funcional Parcial",description:"Sistema automatizado de prospecção freelance — 7 plataformas, $25-35/h",progress:55,details:{meta:"Captação de contratos freelance",gargalo:"Bloqueios anti-bot (Cloudflare/recaptcha) nos portais",acao:"Manter monitoramento no Freelancer.com e Upwork"},sort_order:1},{id:15,pilar_id:6,parent_id:null,name:"Visualizador 360°",status:"Concluído (100%)",description:"Tours Virtuais 360° para imobiliárias — Pannellum, HTML5",progress:100,details:{meta:"Ativo comercial pronto para demonstração",acao:"Disponibilizar demonstração no portfólio web"},sort_order:2},{id:16,pilar_id:6,parent_id:null,name:"Pipeline TeraBox",status:"Em andamento",description:"Migração de backup — 76,41 GB consolidados",progress:60,details:{volume:"76,41 GB"},sort_order:3}],
-  tasks:[]
-};
+const LANES=[
+  {id:'projetos',icon:'⚡',title:'Projetos',color:'#58A6FF'},
+  {id:'saude',icon:'💚',title:'Saúde',color:'#3FB950'},
+  {id:'espiritual',icon:'🕊️',title:'Espiritual',color:'#BC8CFF'},
+  {id:'financeiro',icon:'💰',title:'Financeiro',color:'#D29922'},
+];
 
-let S={pilars:[],projects:[],tasks:[],view:'overview',sel:null,filter:'all',live:false};
-
-async function fetchJSON(ep){const r=await fetch(`${API}${ep}`,{headers:H});if(!r.ok)throw new Error(`${r.status}`);return r.json()}
-
-async function loadData(){
-  try{
-    const[p,pr,t]=await Promise.all([
-      fetchJSON('/pilars?order=sort_order'),
-      fetchJSON('/projects?order=sort_order'),
-      fetchJSON('/tasks?order=sort_order'),
-    ]);
-    S.pilars=p;S.projects=pr;S.tasks=t||[];S.live=true;render();
-  }catch(e){
-    // Fallback: usar dados embutidos
-    S.pilars=EMBEDDED_DATA.pilars;S.projects=EMBEDDED_DATA.projects;S.tasks=EMBEDDED_DATA.tasks||[];S.live=false;render();
-  }
-}
-
-function esc(s){return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):''}
-function statusClass(s){
-  const l=(s||'').toLowerCase();
-  if(l.includes('concluído')||l.includes('100%'))return'status-concluido';
-  if(l.includes('funcional'))return'status-funcional';
-  if(l.includes('operacional')||l.includes('estável'))return'status-estavel';
-  if(l.includes('andamento')||l.includes('refinamento')||l.includes('teste')||l.includes('ativo'))return'status-andamento';
-  if(l.includes('planejado')||l.includes('arquitetado')||l.includes('estruturado'))return'status-planejado';
-  if(l.includes('pausado'))return'status-pausado';
-  if(l.includes('cancelado'))return'status-cancelado';
-  return'status-andamento';
-}
-function pColor(p){if(p>=80)return'var(--green)';if(p>=50)return'var(--accent)';if(p>=25)return'var(--yellow)';return'var(--orange)'}
-function byPilar(pid){return S.projects.filter(p=>p.pilar_id===pid&&!p.parent_id)}
-function subs(pid){return S.projects.filter(p=>p.parent_id===pid)}
-function tasksOf(pid){return S.tasks.filter(t=>t.project_id===pid)}
-
-function renderOverview(){
-  const now=new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
-  const mode=S.live?'live · Supabase':'snapshot embutido';
-  let h=`<div class="header"><h1>Panorama de Projetos</h1><span class="sync-info">${mode} · ${now}</span></div>
-  <div class="subtitle">Ecossistema completo — ${S.live?'dados em tempo real do Supabase':'dados embutidos (deploy no GitHub Pages para live)'}</div>
-  <div class="governance"><span class="icon">⚠</span><span><strong>Regra de Governança:</strong> Jarvis v5.0 e expansões de infra pesada pausados até Taci Finanças gerar faturamento consistente.</span></div>`;
-
-  for(const pi of S.pilars){
-    const mains=byPilar(pi.id);
-    h+=`<div class="pilar-section"><div class="pilar-header">
-      <div class="pilar-num">${pi.number}</div>
-      <div class="pilar-name">${esc(pi.name)}</div>
-      <span class="priority-tag ${(pi.priority||'').toLowerCase()}">${pi.priority||''}</span>
-    </div>`;
-    for(const pr of mains){
-      const ss=subs(pr.id);
-      h+=cardHTML(pr,ss);
+const P=[
+  {id:'jarvis',lane:'projetos',title:'Jarvis v5.0',status:'Pausado',progress:30,pilar:'Core Infrastructure',priority:'P2',
+    desc:'AI Harness OS — 6 pilares (File System, Guides, State, Sensors, Memory, Tools)',
+    detail:{
+      resumo:'Assistente pessoal de IA. Claude Code = corpo, LLM = cérebro. Arquitetura evoluiu para harness de 6 camadas. Pausado até Taci Finanças faturar.',
+      stack:'Python/FastAPI, ChromaDB, Supabase, MCP, Docker',
+      server:'jarvis-server (Oracle A1 ARM, 2 OCPU, 12GB)',
+      kv:{'9Router':'Removido (nov/2026)','Fallback':'Groq → Cerebras → NIM → Mistral → Gemini → Ollama','Medição':'Via .jsonl que Claude Code grava'},
+      subtasks:[
+        {t:'File System — estrutura de pastas',done:true},
+        {t:'Guides — CLAUDE.md atualizado',done:true},
+        {t:'State — state.json com schema',done:false},
+        {t:'Sensors — harness_monitor.py',done:true},
+        {t:'Memory — ChromaDB (68k chunks, 728MB)',done:false},
+        {t:'Tools — MCP servers e integrações',done:false},
+        {t:'Deploy stack Docker no jarvis-server',done:false},
+        {t:'Limpar error.log (1,53GB)',done:false},
+        {t:'roteador.py (duas pistas)',done:false},
+        {t:'medidor.py de consumo',done:false},
+      ]
     }
+  },
+  {id:'taci',lane:'projetos',title:'Taci Finanças',status:'Em andamento',progress:45,pilar:'Frente Comercial',priority:'P1',
+    desc:'Ecossistema comercial — 6 subprojetos de automação e faturamento',
+    children:['graphapi','instaflow','autolvn','cashflow','ebooks','trafego'],
+    detail:{
+      resumo:'Braço comercial (tacianawolff.com.br). Modelo: automação de atração, qualificação e conversão. Prioridade máxima — faturamento custeia o resto do ecossistema.',
+      kv:{'Domínio':'tacianawolff.com.br','IG':'@tacianawolff.financas','Regra':'Desenvolvimento ativo do Jarvis pausado até aqui faturar'}
+    }
+  },
+  {id:'graphapi',lane:'projetos',title:'Graph API + IA',status:'Arquitetado',progress:20,pilar:'Frente Comercial',parent:'taci',
+    desc:'Motor de conversão via Instagram — substitui ManyChat',
+    detail:{
+      resumo:'Webhook Meta → FastAPI (jarvis-server) → Claude Haiku/Ollama → Graph API oficial. 100% aderente às diretrizes da Meta, zero risco de bloqueio.',
+      stack:'FastAPI, Claude Haiku, Graph API Meta',
+      kv:{'ManyChat':'Limite grátis caiu de 1000 para 25 contatos/mês','Bloqueio':'Depende do jarvis-server estar operacional'},
+      subtasks:[
+        {t:'Arquitetura do fluxo webhook → IA → resposta',done:true},
+        {t:'Finalizar rotas FastAPI para teste local',done:false},
+        {t:'Deploy no jarvis-server',done:false},
+        {t:'Testar webhook com conta real IG',done:false},
+        {t:'Integrar com funil de vendas dos ebooks',done:false},
+      ]
+    }
+  },
+  {id:'instaflow',lane:'projetos',title:'InstaFlow',status:'Em Teste',progress:40,pilar:'Frente Comercial',parent:'taci',
+    desc:'Automação de crescimento Instagram — Kotlin + Chaquopy no POCO X5',
+    detail:{
+      resumo:'Migrou de Selenium/PC para app Android nativo. Gerenciamento de tarefas via Supabase, simulação de comportamento humano com delays variáveis.',
+      stack:'Kotlin, Chaquopy, Supabase, Android',
+      kv:{'Device':'POCO X5 (dedicado)','Repo':'felipeawolff-hue/instaflow-app','Regra':'Max 2 tentativas de login, parar em qualquer erro IG'},
+      subtasks:[
+        {t:'Migração Selenium → Kotlin nativo',done:true},
+        {t:'Job queue Supabase',done:true},
+        {t:'Simulação de scroll/delays humanos',done:true},
+        {t:'Ajustar delays contra rate limits',done:false},
+        {t:'Contornar bloqueio de IP na raspagem',done:false},
+        {t:'Testar job queue em campo',done:false},
+      ]
+    }
+  },
+  {id:'autolvn',lane:'projetos',title:'AutoLVN v8',status:'Refinamento Final',progress:80,pilar:'Frente Comercial',parent:'taci',
+    desc:'Indicador de Order Flow para NinjaTrader 8 — produto comercializável',
+    detail:{
+      resumo:'8 versões iterativas. LVN como "Value Area invertida" — parte do menor volume e expande até paredes. Lê ProVolumeProfileTickByTick via reflection .NET.',
+      stack:'C#, NinjaTrader 8, .NET Reflection',
+      kv:{'No-overlap':'Regra absoluta','Recurrence':'Mínimo 3 sessões','Day class':'SMA20 × SMA200 × VWAP','Export':'CSV via ExportYRegions/ImportYRegions'},
+      subtasks:[
+        {t:'Lógica de Value Area Invertida',done:true},
+        {t:'Leitura via Reflection .NET',done:true},
+        {t:'Filtro de tendência (SMA×VWAP)',done:true},
+        {t:'No-overlap rule + 3 opacidades',done:true},
+        {t:'Recurrence validation (3+ sessões)',done:true},
+        {t:'Detecção híbrida v8',done:true},
+        {t:'Validação final com dados reais',done:false},
+        {t:'Material de demonstração',done:false},
+        {t:'Definir preço e canal de venda',done:false},
+      ]
+    }
+  },
+  {id:'cashflow',lane:'projetos',title:'CashFlow 2.0',status:'Funcional',progress:70,pilar:'Frente Comercial',parent:'taci',
+    desc:'App financeiro pessoal — HTML único, Capacitor, zero servidor',
+    detail:{
+      resumo:'7 módulos: Painel, Transações, Potes, Dabasir, Desafio 30d, Renda Extra, Dados. Carry-over de despesas não pagas entre meses.',
+      stack:'HTML5/JS, Capacitor 8.5.2, Google Drive API, SQLite',
+      kv:{'Web':'https://app.tacianawolff.com.br','APK':'app.tacianawolff.com.br/cashflow.apk','Storage':'localStorage cf2_* + Drive backup','CI/CD':'GitHub Actions → SCP wolff-server'},
+      subtasks:[
+        {t:'7 módulos funcionais',done:true},
+        {t:'Lógica de carry-over',done:true},
+        {t:'Google Drive sync',done:true},
+        {t:'CI/CD GitHub Actions',done:true},
+        {t:'Aplicar supaSync() no index.html',done:false},
+        {t:'Publicar OAuth consent pra Production',done:false},
+        {t:'Release keystore Android',done:false},
+        {t:'Publicar na Play Store',done:false},
+      ]
+    }
+  },
+  {id:'ebooks',lane:'projetos',title:'Ebooks / Infoprodutos',status:'Em andamento',progress:50,pilar:'Frente Comercial',parent:'taci',
+    desc:'Ebooks educacionais R$97 — Kiwify + Hotmart',
+    detail:{
+      resumo:'Canal de infoprodutos da Taci Finanças. Ebooks de educação financeira pessoal precificados em R$97.',
+      kv:{'Kiwify':'Taxa 8,99% + R$2,49 (tráfego pago)','Hotmart':'Comissão afiliados 30-50%'},
+      subtasks:[
+        {t:'Definir conteúdo dos ebooks',done:false},
+        {t:'Configurar funil de vendas',done:false},
+        {t:'Landing pages',done:false},
+        {t:'Integrar com Graph API + IA',done:false},
+      ]
+    }
+  },
+  {id:'trafego',lane:'projetos',title:'Tráfego Orgânico',status:'Operacional',progress:60,pilar:'Frente Comercial',parent:'taci',
+    desc:'Discovery Bot — 194 grupos mapeados, 50 validados',
+    detail:{
+      resumo:'Automação Python para localizar e validar grupos públicos de WhatsApp/Telegram por nicho. Campanha taci-ebook.',
+      stack:'Python, Baileys, WAHA (Docker ARM no jarvis-server)',
+      kv:{'Resultado':'194 grupos, 50 validados (min 10 membros, sem duplicatas)'},
+      subtasks:[
+        {t:'Discovery Bot funcional',done:true},
+        {t:'Campanha taci-ebook (194 grupos)',done:true},
+        {t:'Validação de grupos (50 validados)',done:true},
+        {t:'Expandir para novos nichos',done:false},
+        {t:'Automatizar postagem nos validados',done:false},
+      ]
+    }
+  },
+  {id:'massoterapia',lane:'projetos',title:'Massoterapia',status:'Planejado',progress:10,pilar:'Capacitação',priority:'P3',
+    desc:'Formação técnica em 6 módulos — terapias manuais ocidentais e orientais',
+    detail:{
+      resumo:'Programa de capacitação profissional: anatomofisiologia, MTC, prática clínica supervisionada.',
+      subtasks:[
+        {t:'Módulo 1: Fundamentos & Anatomofisiologia',done:false},
+        {t:'Módulo 2: Anamnese, Biossegurança & Ergonomia',done:false},
+        {t:'Módulo 3: Técnicas Ocidentais (Effleurage, DLM, Quick Massage)',done:false},
+        {t:'Módulo 4: Terapias Orientais & MTC (Tui Ná, Shiatsu, Do-in)',done:false},
+        {t:'Módulo 5: Raciocínio Clínico Integrativo',done:false},
+        {t:'Módulo 6: Prática Clínica Supervisionada',done:false},
+      ]
+    }
+  },
+  {id:'childpull',lane:'projetos',title:'Child of the Pull',status:'Ativo',progress:30,pilar:'Caixa de Areia',
+    desc:'Composição musical autoral — refúgio cognitivo',
+    detail:{resumo:'Canal de expressão artística. Sandbox criativa (Sandplay Therapy / Jung). Sem prazos ou metas.'}
+  },
+  {id:'bomromaji',lane:'projetos',title:'BOM Romaji',status:'Concluído',progress:100,pilar:'Caixa de Areia',
+    desc:'Livro de Mórmon em Romaji — 630 páginas PDF A5',
+    detail:{resumo:'15 livros, 239 capítulos transcritos em japonês romanizado.',stack:'Python (pdfplumber, pykakasi, ReportLab)'}
+  },
+  {id:'jobhunter',lane:'projetos',title:'Job Hunter',status:'Funcional Parcial',progress:55,pilar:'Prospecção',
+    desc:'Monitor de 7 plataformas freelance',
+    detail:{
+      resumo:'APScheduler + Supabase + Telegram. Alertas em PT-BR.',
+      stack:'Python, APScheduler, Supabase, undetected-chromedriver, Telegram Bot',
+      kv:{'Plataformas':'Upwork, Freelancer, Workana, 99Freelas, LinkedIn, Indeed, Fiverr','Taxa':'$25-35/h','Portfólio':'felipeawolff-hue.github.io'},
+      subtasks:[
+        {t:'Scraping das 7 plataformas',done:true},
+        {t:'Deduplicação Supabase',done:true},
+        {t:'Alertas Telegram em PT-BR',done:true},
+        {t:'Portfólio GitHub Pages',done:true},
+        {t:'Contornar Cloudflare/recaptcha',done:false},
+        {t:'Upwork API (aguardando aprovação)',done:false},
+      ]
+    }
+  },
+  {id:'viz360',lane:'projetos',title:'Visualizador 360°',status:'Concluído',progress:100,pilar:'Prospecção',
+    desc:'Tours virtuais imobiliários — Pannellum, 100% concluído',
+    detail:{resumo:'App web client-side para navegação interativa em fotos 360°. Ativo comercial empacotado.',stack:'HTML5, CSS3, JS, Pannellum'}
+  },
+  {id:'terabox',lane:'projetos',title:'Pipeline TeraBox',status:'Em andamento',progress:60,pilar:'Prospecção',
+    desc:'Migração 76,41GB de mídias para TeraBox',
+    detail:{
+      resumo:'Google Takeout (pessoal 32GB + Taci 16GB), POCO X5 (10,56GB), cursos GEX (94GB parciais). Checkpoint atômico, split >4GB via ffmpeg.',
+      stack:'Python, ffmpeg',
+      subtasks:[
+        {t:'Script upload_gex.py',done:true},
+        {t:'Script takeout_migration.py',done:true},
+        {t:'Script poco_backup.py',done:true},
+        {t:'Checkpointing atômico',done:true},
+        {t:'Renovar cookie ndus',done:false},
+        {t:'Concluir upload cursos GEX',done:false},
+      ]
+    }
+  },
+];
+
+const SAUDE=[
+  {id:'s-med',title:'Medicação — Dra. Paula Pessi',type:'section',items:[
+    {l:'Gliclazida 60mg',v:'2cp antes do café (~10h)'},
+    {l:'Glifage XR 500mg',v:'2cp+2cp (café + jantar)'},
+    {l:'Neutrofer 300mg',v:'1cp após almoço'},
+    {l:'Rosuvastatina 10mg',v:'1cp à noite'},
+    {l:'Insulina NPH 100UI',v:'10UI seringa, antes de dormir (~13:40)'},
+    {l:'Milgamma 150mg',v:'1cp 12/12h'},
+    {l:'Ômega 3',v:'1 cáp/dia (supl.)'},
+    {l:'Vitamina B12',v:'1 cáp/dia (supl.)'},
+  ]},
+  {id:'s-trk',title:'Tracker Diário',type:'link',desc:'App de hábitos — checks diários, streaks, algoritmos de rotina',url:'https://tracker.tacianawolff.com.br',extra:'Supabase sync: tracker_checks + tracker_state'},
+  {id:'s-cid',title:'Diagnósticos (CIDs)',type:'section',items:[
+    {l:'E10/E109',v:'Diabetes mellitus'},
+    {l:'H35',v:'Transtornos da retina'},
+    {l:'K828',v:'Pólipos vesícula biliar'},
+  ]},
+  {id:'s-enc',title:'Encaminhamentos Pendentes',type:'section',items:[
+    {l:'Gastroenterologia',v:'☐ Marcar (Dra. Paula, CID K828)'},
+    {l:'Nutrição',v:'☐ Confirmar se duplicado'},
+    {l:'Endocrinologia retorno',v:'☐ Remarcar'},
+    {l:'Tomografia óptica',v:'Agendado (Dr. José Inácio, CID H35)'},
+  ]},
+  {id:'s-ex',title:'Exercícios',type:'section',items:[
+    {l:'Calisthenics Memory',v:'Auto-sync → Supabase → Tracker'},
+    {l:'Caminhada/corrida',v:'Strava ou Google Fit'},
+    {l:'Alongamento',v:'Barra de porta (pré/pós)'},
+  ]},
+];
+
+const ESPIR=[
+  {id:'e-thapp',title:'THApp',type:'project',desc:'Temple & History App — Estaca Guarulhos Brasil Cumbica',
+    metrics:[{l:'Usuários',v:'252'},{l:'Telas',v:'22'},{l:'Oficinas',v:'8'},{l:'Módulos',v:'5'}],
+    detail:{
+      resumo:'App gamificado para organizar trabalho de história da família e templo. 5 níveis de acesso (UC, CC, CM, Líder, Admin). Moedas Bulls/Diamonds, XP, Ranks, THApp Store.',
+      stack:'HTML/JS (web) → Kotlin WebView (Android), Supabase, n8n',
+      kv:{'Web':'felipeawolff-hue.github.io/thapp/','OCR':'Tesseract 11/11 campos + Gemini Flash + Claude Haiku','FamilySearch':'Pedido enviado 12/10/2026','Elias':'Chatbot FastAPI + Claude Haiku + RAG'},
+      subtasks:[
+        {t:'22 telas em 5 módulos (design 95%)',done:true},
+        {t:'Extensão Chrome v1 (252 usuários)',done:true},
+        {t:'Pipeline OCR + antifraude (7/8 regras)',done:true},
+        {t:'Gamificação (Bulls, Diamonds, XP)',done:true},
+        {t:'8 oficinas operacionais',done:true},
+        {t:'Implementar agente tutor Elias',done:false},
+        {t:'Resposta do FamilySearch Solution Provider',done:false},
+        {t:'Otimizar rotinas n8n',done:false},
+        {t:'Fluxo de aprovação de PDFs',done:false},
+      ]
+    }
+  },
+  {id:'e-cons',title:'Consultoria HF',type:'section',items:[
+    {l:'Estaca',v:'Guarulhos Brasil Cumbica'},
+    {l:'Membros',v:'~2.700'},
+    {l:'Potencial',v:'~1,4M membros SUD no Brasil'},
+  ]},
+  {id:'e-rom',title:'BOM Romaji',type:'section',items:[
+    {l:'Status',v:'✅ Concluído'},
+    {l:'Formato',v:'PDF A5, 630 páginas'},
+    {l:'Conteúdo',v:'15 livros, 239 capítulos em Romaji'},
+  ]},
+];
+
+const FIN=[
+  {id:'f-res',title:'Resumo Mensal',type:'finance',receita:2285,despesa:2757,
+    receitas:[{n:'Meli',v:850,s:'recorrente até jan/2027'},{n:'Salário 60%',v:1170,s:'fixo'},{n:'Vale alimentação',v:265,s:'fixo'}],
+    despesas:[
+      {cat:'Moradia',items:[{n:'Aluguel',v:1000}]},
+      {cat:'Alimentação',items:[{n:'Mercado',v:700}]},
+      {cat:'Saúde',items:[{n:'Remédios/insulina',v:220}]},
+      {cat:'Religião',items:[{n:'Dízimo',v:217}]},
+      {cat:'Educação',items:[{n:'Faculdade',v:140}]},
+      {cat:'Tech',items:[{n:'Internet+celular',v:200},{n:'Claude',v:110}]},
+      {cat:'Utilidades',items:[{n:'Água',v:30}]},
+    ],
+  },
+  {id:'f-pot',title:'Sistema dos 6 Potes',type:'potes',base:2170,potes:[
+    {n:'Necessidades',p:50},{n:'Liberdade Financeira',p:10},{n:'Educação',p:10},{n:'Diversão',p:10},{n:'Doações',p:10},{n:'Reserva',p:10},
+  ]},
+  {id:'f-cf',title:'CashFlow 2.0',type:'link',desc:'App de controle financeiro — 7 módulos, carry-over automático',url:'https://app.tacianawolff.com.br',extra:'localStorage cf2_* + Google Drive'},
+  {id:'f-dab',title:'Plano Dabasir',type:'section',items:[
+    {l:'Subsistência',v:'70% da renda'},{l:'Dívidas',v:'20% da renda'},{l:'Poupança',v:'10% da renda'},
+  ]},
+];
+
+// ═══════════════════ HELPERS ═══════════════════
+
+const SB={Concluído:'bg',Funcional:'bg',Operacional:'bg',Estável:'bg','Em andamento':'bb','Em Teste':'bb',Ativo:'bb','Refinamento Final':'by','Funcional Parcial':'by',Planejado:'bo',Arquitetado:'bo',Pausado:'br',Cancelado:'br'};
+function sb(s){return SB[s]||'bd'}
+function pc(p){return p>=80?'var(--green)':p>=50?'var(--accent)':p>=25?'var(--yellow)':'var(--orange)'}
+function R$(v){return'R$ '+v.toLocaleString('pt-BR')}
+
+// ═══════════════════ BOARD RENDER ═══════════════════
+
+function renderBoard(){
+  const board=document.getElementById('board');
+  board.classList.remove('hidden');
+  document.getElementById('page-detail').classList.remove('active');
+
+  const order=loadLaneOrder();
+  const lanes=order?order.map(id=>LANES.find(l=>l.id===id)).filter(Boolean):LANES;
+
+  let html='';
+  lanes.forEach((lane,i)=>{
+    if(i>0) html+='<div class="lane-gap"></div>';
+    const cards=lane.id==='projetos'?P.filter(p=>!p.parent).map(cardHTML).join(''):
+      lane.id==='saude'?SAUDE.map(sectionHTML).join(''):
+      lane.id==='espiritual'?ESPIR.map(sectionHTML).join(''):
+      FIN.map(sectionHTML).join('');
+    const cnt=lane.id==='projetos'?P.filter(p=>!p.parent).length:
+      lane.id==='saude'?SAUDE.length:lane.id==='espiritual'?ESPIR.length:FIN.length;
+    const w=loadLaneWidth(lane.id);
+    html+=`<div class="lane" data-lane="${lane.id}" style="border-top:3px solid ${lane.color};${w?'flex-basis:'+w+'px':''}">
+      <div class="lane-hdr" draggable="true" data-lane-drag="${lane.id}">
+        <span class="lane-ico">${lane.icon}</span>
+        <span class="lane-ttl">${lane.title}</span>
+        <span class="lane-cnt">${cnt}</span>
+      </div>
+      <div class="lane-body" data-lane="${lane.id}">${cards}</div>
+      <div class="lane-resize" data-resize-lane="${lane.id}"></div>
+    </div>`;
+  });
+  board.innerHTML=html;
+  initCardDrag();
+  initLaneDrag();
+  initLaneResize();
+}
+
+function cardHTML(p){
+  const ch=p.children&&p.children.length;
+  return`<div class="card" draggable="true" data-id="${p.id}" onclick="openDetail('${p.id}')">
+    <div class="card-t">${p.title}</div>
+    <div class="card-d">${p.desc}</div>
+    <div class="card-m">
+      <span class="b ${sb(p.status)}">${p.status}</span>
+      ${p.pilar?`<span class="b bd">${p.pilar}</span>`:''}
+      ${p.priority?`<span class="b bp">${p.priority}</span>`:''}
+    </div>
+    <div class="pw"><div class="pb" style="width:${p.progress}%;background:${pc(p.progress)}"></div></div>
+    ${ch?`<div style="font-size:.68rem;color:var(--text-muted);margin-top:4px">${p.children.length} subprojetos →</div>`:''}
+  </div>`;
+}
+
+function sectionHTML(c){
+  if(c.type==='link')
+    return`<div class="sc" data-id="${c.id}"><h4>${c.title}</h4><div class="card-d">${c.desc}</div><div style="margin-top:6px"><a href="${c.url}" target="_blank">${c.url.replace('https://','')}</a></div>${c.extra?`<div style="font-size:.68rem;color:var(--text-muted);margin-top:3px">${c.extra}</div>`:''}</div>`;
+  if(c.type==='project')
+    return`<div class="card" draggable="true" data-id="${c.id}" onclick="openDetail('${c.id}')">
+      <div class="card-t">${c.title}</div><div class="card-d">${c.desc}</div>
+      ${c.metrics?`<div class="card-m">${c.metrics.map(m=>`<span class="b bb">${m.l}: ${m.v}</span>`).join('')}</div>`:''}
+      <div style="font-size:.68rem;color:var(--text-muted);margin-top:4px">Clique para detalhes →</div>
+    </div>`;
+  if(c.type==='finance'){
+    const s=c.receita-c.despesa,sc=s>=0?'var(--green)':'var(--red)';
+    return`<div class="sc" data-id="${c.id}" style="cursor:pointer" onclick="openFinanceDetail()">
+      <h4>${c.title}</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:6px 0;text-align:center">
+        <div><div style="font-size:.65rem;color:var(--text-muted)">Receita</div><div style="font-size:1rem;font-weight:600;color:var(--green)">${R$(c.receita)}</div></div>
+        <div><div style="font-size:.65rem;color:var(--text-muted)">Despesa</div><div style="font-size:1rem;font-weight:600;color:var(--red)">${R$(c.despesa)}</div></div>
+        <div><div style="font-size:.65rem;color:var(--text-muted)">Saldo</div><div style="font-size:1rem;font-weight:600;color:${sc}">${R$(s)}</div></div>
+      </div>
+      <div style="font-size:.68rem;color:var(--text-muted)">Ver detalhes →</div>
+    </div>`;
+  }
+  if(c.type==='potes')
+    return`<div class="sc" data-id="${c.id}"><h4>${c.title} <span style="font-size:.68rem;color:var(--text-muted)">(base ${R$(c.base)})</span></h4><ul>${c.potes.map(p=>`<li><span class="v">${p.p}%</span> ${p.n} — <span class="mono">${R$(c.base*p.p/100)}</span></li>`).join('')}</ul></div>`;
+  return`<div class="sc" data-id="${c.id}"><h4>${c.title}</h4><ul>${c.items.map(i=>`<li><span class="v">${i.l}</span> — ${i.v}</li>`).join('')}</ul></div>`;
+}
+
+// ═══════════════════ DETAIL PAGE ═══════════════════
+
+function openDetail(id){
+  let p=P.find(x=>x.id===id);
+  let isEspir=false;
+  if(!p){
+    const ec=ESPIR.find(x=>x.id===id);
+    if(ec&&ec.detail){p={...ec,progress:0,status:'',pilar:''};isEspir=true;}
+    else return;
+  }
+  const d=p.detail||{};
+  const board=document.getElementById('board');
+  const pg=document.getElementById('page-detail');
+  board.classList.add('hidden');
+  pg.classList.add('active');
+  window.scrollTo(0,0);
+
+  let h=`<a href="#" class="back-link" onclick="event.preventDefault();renderBoard()">← Voltar ao dashboard</a>`;
+  h+=`<div class="detail-head"><h2>${p.title}</h2><div class="meta">`;
+  if(p.status)h+=`<span class="b ${sb(p.status)}">${p.status}</span>`;
+  if(p.progress!==undefined)h+=`<span class="b bd">${p.progress}%</span>`;
+  if(p.pilar)h+=`<span class="b bd">${p.pilar}</span>`;
+  if(p.priority)h+=`<span class="b bp">${p.priority}</span>`;
+  h+=`</div>`;
+  if(p.progress!==undefined)h+=`<div class="pw" style="height:6px"><div class="pb" style="width:${p.progress}%;background:${pc(p.progress)}"></div></div>`;
+  h+=`</div>`;
+
+  if(d.resumo)h+=`<div class="detail-sec"><h3>Resumo</h3><p>${d.resumo}</p></div>`;
+  if(d.stack)h+=`<div class="detail-sec"><h3>Stack</h3><p class="mono">${d.stack}</p></div>`;
+  if(d.kv){h+=`<div class="detail-sec"><h3>Detalhes</h3><dl class="kv">`;for(const[k,v] of Object.entries(d.kv))h+=`<dt>${k}</dt><dd>${v}</dd>`;h+=`</dl></div>`;}
+
+  // Children (subprojects)
+  if(p.children&&p.children.length){
+    h+=`<div class="detail-sec"><h3>Subprojetos</h3>`;
+    p.children.forEach(cid=>{
+      const child=P.find(x=>x.id===cid);
+      if(!child)return;
+      const done=child.detail?.subtasks?child.detail.subtasks.filter(s=>s.done).length:0;
+      const total=child.detail?.subtasks?child.detail.subtasks.length:0;
+      h+=`<div class="sub-item" onclick="openDetail('${child.id}')">
+        <span class="b ${sb(child.status)}" style="min-width:50px;text-align:center">${child.progress}%</span>
+        <div class="sub-prog">
+          <span style="font-weight:500;min-width:120px">${child.title}</span>
+          <div class="pw" style="height:6px"><div class="pb" style="width:${child.progress}%;background:${pc(child.progress)}"></div></div>
+        </div>
+        <span class="b ${sb(child.status)}">${child.status}</span>
+        ${total?`<span style="font-size:.72rem;color:var(--text-muted)">${done}/${total}</span>`:''}
+      </div>`;
+    });
     h+=`</div>`;
   }
-  return h;
-}
 
-function cardHTML(pr,ss){
-  const sc=statusClass(pr.status),pc=pColor(pr.progress||0);
-  const si=ss.length>0?`<span class="sub-indicator">▸ ${ss.length} sub-projeto${ss.length>1?'s':''}</span>`:'';
-  const desc=pr.description&&pr.description!==pr.name?`<div class="desc">${esc(pr.description)}</div>`:'';
-  let c=`<div class="project-card" onclick="openProject(${pr.id})">
-    <div class="row"><span class="name">${esc(pr.name)}</span><span class="status-badge ${sc}">${esc(pr.status)}</span></div>
-    ${desc}
-    <div class="progress-row"><div class="progress-bar"><div class="progress-fill" style="width:${pr.progress||0}%;background:${pc}"></div></div><span class="progress-pct">${pr.progress||0}%</span>${si}</div>
-  </div>`;
-  if(ss.length>0){
-    c+=`<div class="sub-projects">`;
-    for(const s of ss){
-      const sc2=statusClass(s.status),pc2=pColor(s.progress||0);
-      c+=`<div class="project-card" onclick="event.stopPropagation();openProject(${s.id})" style="margin-bottom:0">
-        <div class="row"><span class="name" style="font-size:.85rem">${esc(s.name)}</span><span class="status-badge ${sc2}" style="font-size:.65rem">${esc(s.status)}</span></div>
-        <div class="progress-row"><div class="progress-bar"><div class="progress-fill" style="width:${s.progress||0}%;background:${pc2}"></div></div><span class="progress-pct">${s.progress||0}%</span></div>
-      </div>`;
-    }
-    c+=`</div>`;
+  // Subtasks
+  if(d.subtasks&&d.subtasks.length){
+    const done=d.subtasks.filter(s=>s.done).length;
+    h+=`<div class="detail-sec"><h3>Progresso das Tarefas <span style="font-size:.8rem;color:var(--text-muted)">(${done}/${d.subtasks.length})</span></h3>`;
+    h+=`<div class="pw" style="height:8px;margin-bottom:12px"><div class="pb" style="width:${(done/d.subtasks.length*100)}%;background:${pc(done/d.subtasks.length*100)}"></div></div>`;
+    h+=`<ul class="cklist">`;
+    d.subtasks.forEach(s=>h+=`<li class="${s.done?'done':''}">${s.t}</li>`);
+    h+=`</ul></div>`;
   }
-  return c;
+
+  if(d.server)h+=`<div style="margin-top:16px;font-size:.75rem;color:var(--text-muted)">Server: ${d.server}</div>`;
+
+  pg.innerHTML=h;
 }
 
-function renderDetail(){
-  const pr=S.projects.find(p=>p.id===S.sel);
-  if(!pr)return'<div class="error-box">Projeto não encontrado.</div>';
-  const ts=tasksOf(pr.id);const ss=subs(pr.id);
-  let allT=[...ts];for(const s of ss)allT=allT.concat(tasksOf(s.id));
+function openFinanceDetail(){
+  const c=FIN.find(x=>x.id==='f-res');
+  if(!c)return;
+  const board=document.getElementById('board');
+  const pg=document.getElementById('page-detail');
+  board.classList.add('hidden');
+  pg.classList.add('active');
+  window.scrollTo(0,0);
+  const s=c.receita-c.despesa,sc=s>=0?'var(--green)':'var(--red)';
 
-  const total=allT.length,done=allT.filter(t=>t.status==='done').length;
-  const todo=allT.filter(t=>t.status==='todo').length,paused=allT.filter(t=>t.status==='paused').length;
-  const pct=total>0?Math.round(done/total*100):(pr.progress||0);
-
-  const det=pr.details||{};
-  let mc='';
-  if(det.meta)mc+=`<span class="meta-chip">🎯 <strong>Meta:</strong> ${esc(det.meta)}</span>`;
-  if(det.gargalo)mc+=`<span class="meta-chip">⚠ <strong>Gargalo:</strong> ${esc(det.gargalo)}</span>`;
-  if(det.acao)mc+=`<span class="meta-chip">▸ <strong>Ação:</strong> ${esc(det.acao)}</span>`;
-
-  let h=`<button class="back-btn" onclick="goBack()">← Voltar ao panorama</button>
-  <div class="detail-header">
-    <div class="row" style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
-      <h2>${esc(pr.name)}</h2>
-      <span class="status-badge ${statusClass(pr.status)}">${esc(pr.status)}</span>
-    </div>
-    ${pr.description?`<div class="detail-desc">${esc(pr.description)}</div>`:''}
-    ${mc?`<div class="detail-meta">${mc}</div>`:''}
+  let h=`<a href="#" class="back-link" onclick="event.preventDefault();renderBoard()">← Voltar ao dashboard</a>`;
+  h+=`<div class="detail-head"><h2>Detalhes Financeiros</h2></div>`;
+  h+=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0">
+    <div style="text-align:center;padding:14px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r)"><div style="font-size:.7rem;color:var(--text-muted)">Receita</div><div style="font-size:1.3rem;font-weight:700;color:var(--green)">${R$(c.receita)}</div></div>
+    <div style="text-align:center;padding:14px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r)"><div style="font-size:.7rem;color:var(--text-muted)">Despesa</div><div style="font-size:1.3rem;font-weight:700;color:var(--red)">${R$(c.despesa)}</div></div>
+    <div style="text-align:center;padding:14px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r)"><div style="font-size:.7rem;color:var(--text-muted)">Saldo</div><div style="font-size:1.3rem;font-weight:700;color:${sc}">${R$(s)}</div></div>
   </div>`;
 
-  if(total>0){
-    h+=`<div class="stats-bar">
-      <div class="stat-box"><div class="val">${total}</div><div class="label">Total</div></div>
-      <div class="stat-box"><div class="val" style="color:var(--green)">${done}</div><div class="label">Feitas</div></div>
-      <div class="stat-box"><div class="val" style="color:var(--accent)">${todo}</div><div class="label">A Fazer</div></div>
-      <div class="stat-box"><div class="val" style="color:var(--accent)">${pct}%</div><div class="label">Progresso</div></div>
-    </div>`;
+  h+=`<div class="detail-sec"><h3>Receitas</h3><table><tr><th>Fonte</th><th>Valor</th><th>Status</th></tr>`;
+  c.receitas.forEach(r=>h+=`<tr><td>${r.n}</td><td class="mono">${R$(r.v)}</td><td style="font-size:.78rem;color:var(--text-dim)">${r.s}</td></tr>`);
+  h+=`</table></div>`;
 
-    h+=`<div class="filter-bar">
-      <button class="filter-btn ${S.filter==='all'?'active':''}" onclick="setFilter('all')">Todas (${total})</button>
-      <button class="filter-btn ${S.filter==='todo'?'active':''}" onclick="setFilter('todo')">A Fazer (${todo})</button>
-      <button class="filter-btn ${S.filter==='done'?'active':''}" onclick="setFilter('done')">Feitas (${done})</button>
-      ${paused>0?`<button class="filter-btn ${S.filter==='paused'?'active':''}" onclick="setFilter('paused')">Pausadas (${paused})</button>`:''}
-    </div>`;
+  h+=`<div class="detail-sec"><h3>Despesas por Categoria</h3><table><tr><th>Categoria</th><th>Item</th><th>Valor</th></tr>`;
+  c.despesas.forEach(cat=>cat.items.forEach((it,i)=>h+=`<tr><td>${i===0?cat.cat:''}</td><td>${it.n}</td><td class="mono">${R$(it.v)}</td></tr>`));
+  h+=`</table></div>`;
 
-    const filtered=S.filter==='all'?allT:allT.filter(t=>t.status===S.filter);
-    const branches={};
-    for(const t of filtered){const br=t.branch||'Geral';if(!branches[br])branches[br]=[];branches[br].push(t)}
-
-    const icons=['📋','🔧','💻','📊','🎯','🚀','📦','🔬','📝','⚙️'];
-    const colors=['var(--accent)','var(--green)','var(--purple)','var(--orange)','var(--cyan)','var(--yellow)'];
-    let bi=0;
-    for(const[bn,bt]of Object.entries(branches)){
-      const bd=bt.filter(t=>t.status==='done').length;
-      h+=`<div class="branch open" id="branch-${bi}">
-        <div class="branch-header" onclick="toggleBranch(${bi})">
-          <span class="branch-icon">${icons[bi%icons.length]}</span>
-          <span class="branch-name" style="color:${colors[bi%colors.length]}">${esc(bn)}</span>
-          <span class="branch-count">${bd}/${bt.length}</span>
-          <span class="branch-chevron">▸</span>
-        </div><div class="branch-tasks">`;
-      for(const t of bt){
-        const cc=t.status==='done'?'done':t.status==='paused'?'paused':t.status==='canceled'?'canceled':'';
-        const ci=t.status==='done'?'✓':t.status==='paused'?'⏸':t.status==='canceled'?'✗':'';
-        h+=`<div class="task-item">
-          <div class="task-check ${cc}">${ci}</div>
-          <div style="flex:1">
-            <div class="task-title ${t.status}">${esc(t.title)}</div>
-            ${t.note?`<div class="task-note">${esc(t.note)}</div>`:''}
-          </div>
-        </div>`;
-      }
-      h+=`</div></div>`;bi++;
-    }
-  } else {
-    h+=`<div class="no-tasks">Nenhuma tarefa cadastrada para este projeto.<br><small>Crie um companion MD (ex: <code>${pr.name.toLowerCase().replace(/\s+/g,'-')}.md</code>) com checkboxes para popular.</small></div>`;
-    if(ss.length>0){
-      h+=`<h3 style="font-family:var(--font-display);margin:20px 0 10px;font-size:1rem">Sub-projetos</h3><div class="sub-projects">`;
-      for(const s of ss){
-        const sc2=statusClass(s.status),pc2=pColor(s.progress||0),sd=s.details||{};
-        h+=`<div class="project-card" onclick="openProject(${s.id})" style="margin-bottom:0">
-          <div class="row"><span class="name" style="font-size:.85rem">${esc(s.name)}</span><span class="status-badge ${sc2}" style="font-size:.65rem">${esc(s.status)}</span></div>
-          ${s.description?`<div class="desc">${esc(s.description)}</div>`:''}
-          <div class="progress-row"><div class="progress-bar"><div class="progress-fill" style="width:${s.progress||0}%;background:${pc2}"></div></div><span class="progress-pct">${s.progress||0}%</span></div>
-          ${sd.meta?`<div style="font-size:.72rem;color:var(--text-muted);margin-top:6px">🎯 ${esc(sd.meta)}</div>`:''}
-        </div>`;
-      }
-      h+=`</div>`;
-    }
+  const pt=FIN.find(x=>x.id==='f-pot');
+  if(pt){
+    h+=`<div class="detail-sec"><h3>Sistema dos 6 Potes (base ${R$(pt.base)})</h3><table><tr><th>Pote</th><th>%</th><th>Valor</th></tr>`;
+    pt.potes.forEach(p=>h+=`<tr><td>${p.n}</td><td>${p.p}%</td><td class="mono">${R$(pt.base*p.p/100)}</td></tr>`);
+    h+=`</table></div>`;
   }
-  return h;
+
+  h+=`<div style="margin-top:16px"><a href="https://app.tacianawolff.com.br" target="_blank" style="color:var(--accent);font-size:.85rem">Abrir CashFlow 2.0 →</a></div>`;
+  pg.innerHTML=h;
 }
 
-function openProject(id){S.sel=id;S.view='detail';S.filter='all';render();scrollTo(0,0)}
-function goBack(){S.view='overview';S.sel=null;render()}
-function setFilter(f){S.filter=f;render()}
-function toggleBranch(i){const e=document.getElementById('branch-'+i);if(e)e.classList.toggle('open')}
-function render(){document.getElementById('app').innerHTML=S.view==='detail'?renderDetail():renderOverview()}
+// ═══════════════════ CARD DRAG & DROP ═══════════════════
 
-loadData();
+function initCardDrag(){
+  document.querySelectorAll('.card[draggable]').forEach(card=>{
+    card.addEventListener('dragstart',e=>{
+      if(e.target.closest('.lane-hdr'))return;
+      card.classList.add('dragging');
+      e.dataTransfer.setData('text/plain','card:'+card.dataset.id);
+      e.dataTransfer.effectAllowed='move';
+    });
+    card.addEventListener('dragend',()=>card.classList.remove('dragging'));
+  });
+
+  document.querySelectorAll('.lane-body').forEach(body=>{
+    body.addEventListener('dragover',e=>{
+      const dt=e.dataTransfer.types;
+      if(!dt.includes('text/plain'))return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect='move';
+      body.closest('.lane').classList.add('drag-over');
+      const dragging=document.querySelector('.card.dragging');
+      if(!dragging)return;
+      const after=getAfter(body,e.clientY);
+      if(after)body.insertBefore(dragging,after);else body.appendChild(dragging);
+    });
+    body.addEventListener('dragleave',e=>{
+      if(!body.contains(e.relatedTarget))body.closest('.lane').classList.remove('drag-over');
+    });
+    body.addEventListener('drop',e=>{
+      e.preventDefault();
+      body.closest('.lane').classList.remove('drag-over');
+    });
+  });
+}
+
+function getAfter(c,y){
+  const els=[...c.querySelectorAll('.card:not(.dragging),.sc')];
+  return els.reduce((cl,ch)=>{
+    const b=ch.getBoundingClientRect();const off=y-b.top-b.height/2;
+    return off<0&&off>cl.offset?{offset:off,element:ch}:cl;
+  },{offset:-Infinity}).element;
+}
+
+// ═══════════════════ LANE DRAG (reorder lanes) ═══════════════════
+
+function initLaneDrag(){
+  let dragLaneId=null;
+  document.querySelectorAll('.lane-hdr[draggable]').forEach(hdr=>{
+    hdr.addEventListener('dragstart',e=>{
+      dragLaneId=hdr.dataset.laneDrag;
+      e.dataTransfer.setData('text/plain','lane:'+dragLaneId);
+      e.dataTransfer.effectAllowed='move';
+      setTimeout(()=>hdr.closest('.lane').style.opacity='.4',0);
+    });
+    hdr.addEventListener('dragend',()=>{
+      hdr.closest('.lane').style.opacity='';
+      dragLaneId=null;
+      document.querySelectorAll('.lane').forEach(l=>l.classList.remove('drag-over-lane'));
+    });
+  });
+
+  document.querySelectorAll('.lane').forEach(lane=>{
+    lane.addEventListener('dragover',e=>{
+      const data=e.dataTransfer.types;
+      if(!data.includes('text/plain'))return;
+      e.preventDefault();
+      if(dragLaneId&&lane.dataset.lane!==dragLaneId){
+        lane.classList.add('drag-over-lane');
+      }
+    });
+    lane.addEventListener('dragleave',e=>{
+      if(!lane.contains(e.relatedTarget))lane.classList.remove('drag-over-lane');
+    });
+    lane.addEventListener('drop',e=>{
+      lane.classList.remove('drag-over-lane');
+      if(!dragLaneId)return;
+      const targetId=lane.dataset.lane;
+      if(targetId===dragLaneId)return;
+      e.preventDefault();
+      e.stopPropagation();
+      // Swap lanes
+      const board=document.getElementById('board');
+      const allLanes=[...board.querySelectorAll('.lane')];
+      const srcLane=allLanes.find(l=>l.dataset.lane===dragLaneId);
+      const tgtLane=lane;
+      if(!srcLane)return;
+      const srcGap=srcLane.previousElementSibling;
+      const tgtGap=tgtLane.previousElementSibling;
+      // Insert src before target
+      if(tgtGap&&tgtGap.classList.contains('lane-gap')){
+        board.insertBefore(srcLane,tgtGap);
+        if(srcGap&&srcGap.classList.contains('lane-gap'))board.insertBefore(srcGap,srcLane);
+      }else{
+        board.insertBefore(srcLane,tgtLane);
+      }
+      saveLaneOrder();
+    });
+  });
+}
+
+function saveLaneOrder(){
+  try{
+    const order=[...document.querySelectorAll('.lane')].map(l=>l.dataset.lane);
+    localStorage.setItem('dash-lane-order',JSON.stringify(order));
+  }catch(e){}
+}
+function loadLaneOrder(){
+  try{const s=localStorage.getItem('dash-lane-order');return s?JSON.parse(s):null;}catch(e){return null;}
+}
+
+// ═══════════════════ LANE RESIZE ═══════════════════
+
+function initLaneResize(){
+  document.querySelectorAll('.lane-resize').forEach(handle=>{
+    let startX,startW,lane;
+    handle.addEventListener('mousedown',e=>{
+      e.preventDefault();
+      lane=handle.closest('.lane');
+      startX=e.clientX;
+      startW=lane.getBoundingClientRect().width;
+      handle.classList.add('active');
+      const onMove=ev=>{
+        const diff=ev.clientX-startX;
+        const newW=Math.max(200,Math.min(800,startW+diff));
+        lane.style.flexBasis=newW+'px';
+      };
+      const onUp=()=>{
+        handle.classList.remove('active');
+        document.removeEventListener('mousemove',onMove);
+        document.removeEventListener('mouseup',onUp);
+        saveLaneWidth(lane.dataset.lane,parseInt(lane.style.flexBasis));
+      };
+      document.addEventListener('mousemove',onMove);
+      document.addEventListener('mouseup',onUp);
+    });
+  });
+}
+
+function saveLaneWidth(id,w){
+  try{const d=JSON.parse(localStorage.getItem('dash-lane-widths')||'{}');d[id]=w;localStorage.setItem('dash-lane-widths',JSON.stringify(d));}catch(e){}
+}
+function loadLaneWidth(id){
+  try{const d=JSON.parse(localStorage.getItem('dash-lane-widths')||'{}');return d[id]||null;}catch(e){return null;}
+}
+
+// ═══════════════════ THEME ═══════════════════
+
+function toggleTheme(){
+  const r=document.documentElement,c=r.getAttribute('data-theme');
+  const n=c==='dark'?'light':'dark';r.setAttribute('data-theme',n);
+  try{localStorage.setItem('dash-theme',n);}catch(e){}
+}
+(function(){try{const s=localStorage.getItem('dash-theme');if(s)document.documentElement.setAttribute('data-theme',s);}catch(e){}})();
+
+// ═══════════════════ INIT ═══════════════════
+renderBoard();
 </script>
 </body>
 </html>
