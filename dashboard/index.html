@@ -23,7 +23,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .tbtn:hover{border-color:var(--accent);color:var(--accent)}
 
 /* BOARD */
-.board{display:flex;flex-wrap:wrap;gap:12px;padding:16px;min-height:calc(100vh - 52px);align-items:flex-start}
+.board{display:flex;flex-wrap:wrap;gap:12px;padding:16px;min-height:calc(100vh - 52px);align-items:flex-start;align-content:flex-start;padding-bottom:120px}
 .lane{flex:0 0 320px;background:var(--bg-lane);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;position:relative;transition:border-color .15s;min-width:180px;min-height:120px}
 .lane.drag-over-lane{border-color:var(--accent);box-shadow:0 0 0 2px rgba(88,166,255,.25)}
 .lane.drag-over{background:var(--drag-over);border-color:var(--accent)}
@@ -32,7 +32,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .lane-ico{font-size:1.1rem}
 .lane-ttl{font-size:.95rem;font-weight:600;flex:1}
 .lane-cnt{font-size:.7rem;color:var(--text-muted);background:var(--bg);padding:2px 7px;border-radius:10px}
-.lane-body{padding:6px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:6px;min-height:50px}
+.lane-body{padding:6px;overflow-y:auto;flex:1;display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;min-height:50px;align-items:flex-start;align-content:flex-start}
 
 /* LANE RESIZE HANDLE — corner */
 .lane-resize{position:absolute;bottom:0;right:0;width:18px;height:18px;cursor:nwse-resize;z-index:10}
@@ -40,7 +40,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .lane:hover .lane-resize::after,.lane-resize.active::after{opacity:1;border-color:var(--accent)}
 
 /* CARDS */
-.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;position:relative;overflow:hidden;min-height:40px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;position:relative;overflow:hidden;min-height:40px;flex:0 0 auto;width:100%}
 .card:hover{border-color:var(--accent);box-shadow:var(--shadow);transform:translateY(-1px)}
 .card.dragging{opacity:.35;transform:scale(.95)}
 .card[draggable]{cursor:grab}
@@ -70,7 +70,7 @@ h1,h2,h3{font-family:'Space Grotesk',sans-serif}
 .pb{height:100%;border-radius:2px;transition:width .3s}
 
 /* SECTION CARDS */
-.sc{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;min-height:40px;position:relative}
+.sc{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;min-height:40px;position:relative;flex:0 0 auto;width:100%}
 .sc h4{font-size:.8rem;font-weight:600;margin-bottom:5px}
 .sc ul{list-style:none;padding:0}
 .sc li{font-size:.75rem;color:var(--text-dim);padding:2px 0;border-bottom:1px solid var(--border)}
@@ -621,7 +621,7 @@ function initCardDrag(){
       body.closest('.lane').classList.add('drag-over');
       const dragging=document.querySelector('.card.dragging');
       if(!dragging)return;
-      const after=getAfter(body,e.clientY);
+      const after=getAfter(body,e.clientY,e.clientX);
       if(after)body.insertBefore(dragging,after);else body.appendChild(dragging);
     });
     body.addEventListener('dragleave',e=>{
@@ -634,12 +634,16 @@ function initCardDrag(){
   });
 }
 
-function getAfter(c,y){
+function getAfter(c,y,x){
   const els=[...c.querySelectorAll('.card:not(.dragging),.sc')];
-  return els.reduce((cl,ch)=>{
-    const b=ch.getBoundingClientRect();const off=y-b.top-b.height/2;
-    return off<0&&off>cl.offset?{offset:off,element:ch}:cl;
-  },{offset:-Infinity}).element;
+  let best=null,bestDist=Infinity;
+  for(const el of els){
+    const r=el.getBoundingClientRect();
+    const cx=r.left+r.width/2,cy=r.top+r.height/2;
+    const d=Math.hypot(x-cx,y-cy);
+    if((y<cy||x<cx)&&d<bestDist){bestDist=d;best=el;}
+  }
+  return best;
 }
 
 // ═══════════════════ LANE DRAG (reorder — works with flex-wrap) ═══════════════════
@@ -689,13 +693,17 @@ function initLaneDrag(){
 }
 
 function getLaneAt(lanes,mx,my,skipId){
+  const others=lanes.filter(l=>l.dataset.lane!==skipId);
+  if(!others.length)return null;
+  // If mouse is below all lanes, append at end
+  const maxBottom=Math.max(...others.map(l=>l.getBoundingClientRect().bottom));
+  if(my>maxBottom+20)return null;
   let best=null,bestDist=Infinity;
-  for(const l of lanes){
-    if(l.dataset.lane===skipId)continue;
+  for(const l of others){
     const r=l.getBoundingClientRect();
     const cx=r.left+r.width/2,cy=r.top+r.height/2;
     const d=Math.hypot(mx-cx,my-cy);
-    if(d<bestDist){bestDist=d;best={el:l,after:mx>cx||my>cy+r.height/4};}
+    if(d<bestDist){bestDist=d;best={el:l,after:my>cy||(Math.abs(my-cy)<r.height/3&&mx>cx)};}
   }
   return best;
 }
